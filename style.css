@@ -1,5 +1,5 @@
 /* =========================================
-   SCOREMASTER PRO - RESPONSIVE STYLE V4.5
+   SCOREMASTER PRO - RESPONSIVE STYLE V4.6
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -170,7 +170,7 @@ body {
     text-align: left; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); 
     cursor: pointer; display: flex; gap: 12px; align-items: center; transition: all 0.2s;
 }
-.nav-item .icon { width: 24px; text-align: center; } /* Ensure font-awesome icons align */
+.nav-item .icon { width: 24px; text-align: center; } 
 .nav-item:hover { background: rgba(255,255,255,0.2); color: var(--text-main); }
 .nav-item.active { 
     background: linear-gradient(90deg, rgba(79, 70, 229, 0.15), transparent); 
@@ -529,6 +529,21 @@ input:checked + .slider:before { transform: translateX(22px); }
     }
     .logo-area-mobile { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--primary); }
     .logo-icon-sm { width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    
+    /* FIX: Mobile Menu Button Styling */
+    #mobile-menu-btn {
+        background: transparent;
+        border: none;
+        font-size: 1.5rem; /* Larger icon */
+        color: var(--text-main); /* Adapt to theme */
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s ease;
+    }
+
     .content-area { padding: 15px; padding-bottom: calc(80px + var(--sab)); }
 
     /* Dashboard Grid Mobile */

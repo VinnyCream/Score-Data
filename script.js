@@ -1,6 +1,6 @@
 /**
  * SCOREMASTER PRO - CORE JAVASCRIPT
- * Version: 4.5.0 (FontAwesome Integration & Detailed Result Breakdown)
+ * Version: 4.6.0 (Mobile Menu Icon Update)
  * Architecture: Modular Object Literal Pattern
  */
 
@@ -8,7 +8,7 @@
 // 1. DEV CONTROL & CONFIG
 // ==========================================
 const CONFIG = {
-    APP_VERSION: '4.5.0 Pro',
+    APP_VERSION: '4.6.0 Pro',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, // 5 minutes
@@ -1019,6 +1019,7 @@ const App = {
             };
         });
 
+        // NÂNG CẤP: Nút mở Menu Mobile
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         if(mobileMenuBtn) {
             mobileMenuBtn.onclick = () => {
