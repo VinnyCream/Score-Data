@@ -1,15 +1,14 @@
 /**
  * SCOREMASTER PRO - CORE JAVASCRIPT
- * Version: 3.3.0 (Crop Avatar Update)
+ * Version: 4.0.0 (Mobile Responsive Upgrade)
  * Architecture: Modular Object Literal Pattern
- * Developer: Gemini AI
  */
 
 // ==========================================
 // 1. DEV CONTROL & CONFIG
 // ==========================================
 const CONFIG = {
-    APP_VERSION: '3.3.0 Pro',
+    APP_VERSION: '4.0.0 Pro',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, // 5 minutes
@@ -478,7 +477,7 @@ const UI = {
 
         if (filtered.length === 0) {
             const lang = App.currentUser ? App.currentUser.settings.lang : 'vi';
-            container.innerHTML = `<div class="empty-state"><p>${LANG[lang].emptyHistory}</p></div>`;
+            container.innerHTML = `<div class="empty-state"><img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" alt="Empty" width="60"><p>${LANG[lang].emptyHistory}</p></div>`;
             return;
         }
 
@@ -494,6 +493,7 @@ const UI = {
             const isChecked = App.selectedItems && App.selectedItems.has(item.id) ? 'checked' : '';
             if (isChecked) div.classList.add('selected');
 
+            // --- NÂNG CẤP: Sử dụng DIV thay vì SPAN để tương thích Grid Layout ---
             div.innerHTML = `
                 <div class="col-check">
                     <input type="checkbox" class="custom-checkbox item-checkbox" ${isChecked} onclick="event.stopPropagation(); App.toggleSelection(${item.id})">
@@ -578,13 +578,12 @@ const UI = {
         window.requestAnimationFrame(step);
     },
 
+    // --- NÂNG CẤP: CHART RESPONSIVE ---
     drawCharts: (distData, history) => {
         const ctx1 = document.getElementById('scoreDistributionChart').getContext('2d');
         if (UI.chartInstances.pie) UI.chartInstances.pie.destroy();
         
-        const themeColors = document.body.getAttribute('data-theme') === 'dark' 
-            ? ['#10B981', '#3B82F6', '#F59E0B', '#F97316', '#EF4444'] 
-            : ['#10B981', '#3B82F6', '#F59E0B', '#F97316', '#EF4444'];
+        const themeColors = ['#10B981', '#3B82F6', '#F59E0B', '#F97316', '#EF4444'];
 
         UI.chartInstances.pie = new Chart(ctx1, {
             type: 'doughnut',
@@ -594,14 +593,24 @@ const UI = {
                     data: [distData.A, distData.B, distData.C, distData.D, distData.F],
                     backgroundColor: themeColors,
                     borderWidth: 0,
-                    hoverOffset: 10
+                    hoverOffset: 12
                 }]
             },
             options: { 
                 responsive: true, 
                 maintainAspectRatio: false, 
-                plugins: { legend: { position: 'right', labels: { color: 'var(--text-main)' } } },
-                cutout: '65%'
+                layout: { padding: 10 },
+                plugins: { 
+                    legend: { 
+                        position: window.innerWidth < 480 ? 'bottom' : 'right', 
+                        labels: { 
+                            color: 'var(--text-main)',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                            boxWidth: 12
+                        } 
+                    } 
+                },
+                cutout: '70%'
             }
         });
     },
@@ -923,11 +932,23 @@ const App = {
                 btn.classList.add('active');
                 document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
                 document.getElementById(btn.dataset.target).classList.add('active');
-                document.querySelector('.sidebar').classList.remove('open');
+                
+                // NÂNG CẤP: Đóng sidebar trên mobile khi chọn menu
+                const sidebar = document.querySelector('.sidebar');
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('open');
+                }
             };
         });
 
-        document.getElementById('mobile-menu-btn').onclick = () => document.querySelector('.sidebar').classList.toggle('open');
+        // NÂNG CẤP: Nút mở Menu Mobile
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if(mobileMenuBtn) {
+            mobileMenuBtn.onclick = () => {
+                document.querySelector('.sidebar').classList.add('open');
+            };
+        }
+
         document.getElementById('btn-logout-mini').onclick = Auth.logout;
 
         document.getElementById('weight-select').onchange = (e) => UI.renderInputs(e.target.value);

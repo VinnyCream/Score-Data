@@ -2,15 +2,14 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Score Data - Hệ Thống Tính Điểm Đại Học Chuyên Nghiệp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ScoreMaster - Hệ Thống Tính Điểm Đại Học</title>
     <meta name="description" content="Công cụ tính điểm GPA, quản lý điểm số sinh viên đại học tốt nhất.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -34,7 +33,7 @@
                     <div class="logo-icon-lg">
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                     </div>
-                    <h1 class="app-name">Score Data</h1>
+                    <h1 class="app-name">ScoreMaster</h1>
                     <p class="app-slogan" data-i18n="welcomeSub">Hệ thống quản lý điểm số sinh viên</p>
                 </div>
             </div>
@@ -111,7 +110,7 @@
                 <div class="logo-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                 </div>
-                <span class="brand-text">Score Data</span>
+                <span class="brand-text">ScoreMaster</span>
             </div>
             
             <nav class="nav-menu">
@@ -146,11 +145,13 @@
             </div>
         </aside>
 
+        <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open')"></div>
+
         <main class="content-area">
             
             <header class="mobile-header">
                 <div class="logo-area-mobile">
-                    <div class="logo-icon">SM</div>
+                    <div class="logo-icon-sm">SM</div>
                     <span>ScoreMaster</span>
                 </div>
                 <button id="mobile-menu-btn">
@@ -212,7 +213,7 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                             </div>
                             <div class="info">
-                                <h4 data-i18n="statCredits">Tổng Tín Chỉ</h4>
+                                <h4 data-i18n="statCredits">Tín Chỉ</h4>
                                 <div class="number text-blue" id="dash-total-credits">0</div>
                             </div>
                         </div>
@@ -307,8 +308,7 @@
                         </div>
                     </div>
                     
-                    <div id="folder-container" class="folder-list-row">
-                        </div>
+                    <div id="folder-container" class="folder-list-row"></div>
 
                     <div class="controls-row">
                         <div class="filter-tabs">
@@ -327,25 +327,21 @@
                     <div id="selection-action-bar" class="selection-bar hidden">
                         <span class="selection-count">Đã chọn: <b id="sel-count">0</b></span>
                         <div class="selection-buttons">
-                            <button class="btn btn-sm btn-primary" id="btn-create-folder">
-                                📁 Tạo thư mục
-                            </button>
-                            <button class="btn btn-sm btn-danger" id="btn-delete-multi">
-                                🗑️ Xóa
-                            </button>
+                            <button class="btn btn-sm btn-glass" id="btn-create-folder">📁 Tạo Folder</button>
+                            <button class="btn btn-sm btn-danger" id="btn-delete-multi">🗑️ Xóa</button>
                             <button class="btn btn-sm btn-outline" id="btn-cancel-sel">Hủy</button>
                         </div>
                     </div>
 
                     <div class="table-header-row">
-                        <span class="col-check">
+                        <div class="col-check">
                             <input type="checkbox" id="check-all-history" class="custom-checkbox">
-                        </span>
-                        <span class="col-sub">Môn học</span>
-                        <span class="col-type">Tỷ lệ</span>
-                        <span class="col-cred">Tín chỉ</span>
-                        <span class="col-score">Điểm</span>
-                        <span class="col-act">Hành động</span>
+                        </div>
+                        <div class="col-sub">Môn học</div>
+                        <div class="col-type">Tỷ lệ</div>
+                        <div class="col-cred">Tín chỉ</div>
+                        <div class="col-score">Điểm</div>
+                        <div class="col-act">Xóa</div>
                     </div>
 
                     <div id="history-list" class="history-list-container scroll-custom">
