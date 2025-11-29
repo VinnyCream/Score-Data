@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Data - Hệ Thống Tính Điểm Đại Học Chuyên Nghiệp</title>
+    <meta name="description" content="Công cụ tính điểm GPA, quản lý điểm số sinh viên đại học tốt nhất.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body data-theme="light">
+
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="auth-screen" class="main-container center-content">
+        <div class="glass-card auth-card fade-in-up">
+            <div class="auth-header">
+                <div class="logo-area">
+                    <div class="logo-icon-lg">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h1 class="app-name">Score Data</h1>
+                    <p class="app-slogan" data-i18n="welcomeSub">Hệ thống quản lý điểm số sinh viên</p>
+                </div>
+            </div>
+            
+            <div id="login-form" class="auth-form">
+                <h2 data-i18n="loginHeader">Đăng nhập</h2>
+                
+                <div class="input-wrapper">
+                    <input type="text" id="login-username" placeholder=" " autocomplete="username">
+                    <label data-i18n="usernameLabel">Tên đăng nhập</label>
+                    <span class="input-icon">👤</span>
+                </div>
+
+                <div class="input-wrapper">
+                    <input type="password" id="login-password" placeholder=" " autocomplete="current-password">
+                    <label data-i18n="passwordLabel">Mật khẩu</label>
+                    <span class="toggle-password" onclick="App.togglePassword('login-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                </div>
+
+                <button class="btn btn-primary full-width hover-scale shimmer-effect" id="btn-login">
+                    <span data-i18n="loginBtn">Đăng nhập</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+
+                <div class="divider"><span data-i18n="orText">HOẶC</span></div>
+
+                <button class="btn btn-glass full-width" id="btn-guest">
+                    <span data-i18n="guestBtn">Tiếp tục với vai trò Khách</span>
+                </button>
+
+                <div class="auth-footer">
+                    <span data-i18n="noAccount">Chưa có tài khoản?</span> 
+                    <a href="#" onclick="UI.switchAuth('register')" data-i18n="registerLink">Tạo tài khoản mới</a>
+                </div>
+            </div>
+
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h2 data-i18n="registerHeader">Tạo tài khoản</h2>
+                <p class="desc-text" data-i18n="regSub">Tạo tài khoản để lưu trữ dữ liệu lâu dài</p>
+
+                <div class="input-wrapper">
+                    <input type="text" id="reg-username" placeholder=" " autocomplete="off">
+                    <label data-i18n="usernameLabel">Tên đăng nhập</label>
+                    <span class="input-icon">👤</span>
+                </div>
+
+                <div class="input-wrapper">
+                    <input type="password" id="reg-password" placeholder=" ">
+                    <label data-i18n="passwordLabel">Mật khẩu</label>
+                    <span class="toggle-password" onclick="App.togglePassword('reg-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                </div>
+
+                <button class="btn btn-primary full-width hover-scale shimmer-effect" id="btn-register">
+                    <span data-i18n="createAccountBtn">Đăng Ký Ngay</span>
+                </button>
+
+                <div class="auth-footer">
+                    <span data-i18n="haveAccount">Đã có tài khoản?</span> 
+                    <a href="#" onclick="UI.switchAuth('login')" data-i18n="loginLink">Đăng nhập ngay</a>
+                </div>
+            </div>
+        </div>
+        <p class="copyright">© 2025 VinnyCream. All rights reserved.</p>
+    </div>
+
+    <div id="app-screen" class="app-layout" style="display: none;">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span class="brand-text">Score Data</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-item active" data-target="dashboard">
+                    <span class="icon">📊</span> <span data-i18n="navDashboard">Tổng quan</span>
+                </button>
+                <button class="nav-item" data-target="calculator">
+                    <span class="icon">🧮</span> <span data-i18n="navCalculator">Tính điểm</span>
+                </button>
+                <button class="nav-item" data-target="history">
+                    <span class="icon">📜</span> <span data-i18n="navHistory">Lịch sử</span>
+                </button>
+                <button class="nav-item" data-target="settings">
+                    <span class="icon">⚙️</span> <span data-i18n="navSettings">Cài đặt</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-mini-profile">
+                    <div class="avatar-box">
+                        <img src="images/DefaultProfilePic.jpg" id="mini-avatar" alt="User">
+                        <span class="status-dot"></span>
+                    </div>
+                    <div class="user-info">
+                        <div id="mini-nickname" class="name">Guest</div>
+                        <div id="mini-username" class="role">@guest</div>
+                    </div>
+                    <button id="btn-logout-mini" class="btn-icon-sm" title="Đăng xuất">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            
+            <header class="mobile-header">
+                <div class="logo-area-mobile">
+                    <div class="logo-icon">SM</div>
+                    <span>ScoreMaster</span>
+                </div>
+                <button id="mobile-menu-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+            </header>
+
+            <section id="dashboard" class="page-section active fade-in">
+                <div class="section-header">
+                    <div>
+                        <h2 class="page-title" data-i18n="dashboardTitle">Bảng điều khiển</h2>
+                        <span id="dashboard-source-label" class="source-badge">📁 Nguồn: Tất cả</span>
+                    </div>
+                    <div class="date-display" id="current-date">...</div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="main-stats glass-card glow-border">
+                        <div class="stat-content full-width-flex">
+                            <h3 data-i18n="totalScoreTitle">GPA Tích Lũy</h3>
+                            
+                            <div class="gpa-dual-display">
+                                <div class="gpa-item">
+                                    <span class="gpa-label">Thang 10</span>
+                                    <div class="big-score counter" id="dash-gpa-10">0.00</div>
+                                </div>
+                                <div class="vertical-divider"></div>
+                                <div class="gpa-item">
+                                    <span class="gpa-label">Thang 4</span>
+                                    <div class="big-score counter text-primary" id="dash-gpa-4">0.00</div>
+                                </div>
+                            </div>
+                            
+                            <div class="rank-badge" id="dash-ranking">Chưa xếp loại</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-stats-grid">
+                        <div class="stat-card glass-card">
+                            <div class="icon-box green">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <div class="info">
+                                <h4 data-i18n="statPass">Qua môn</h4>
+                                <div class="number text-green" id="dash-pass-count">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="icon-box red">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                            </div>
+                            <div class="info">
+                                <h4 data-i18n="statFail">Rớt môn</h4>
+                                <div class="number text-red" id="dash-fail-count">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="icon-box blue">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            </div>
+                            <div class="info">
+                                <h4 data-i18n="statCredits">Tổng Tín Chỉ</h4>
+                                <div class="number text-blue" id="dash-total-credits">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container glass-card large-span">
+                        <div class="chart-header">
+                            <h4 data-i18n="chartTitle">Phân bố điểm số (A - F)</h4>
+                            <select id="chart-filter-year" class="chart-select">
+                                <option value="all">Tất cả thời gian</option>
+                            </select>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="scoreDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="calculator" class="page-section fade-in">
+                <h2 class="page-title" data-i18n="navCalculator">Công cụ tính điểm</h2>
+                <div class="calc-wrapper">
+                    <div class="glass-card form-container">
+                        <h3 data-i18n="calcSubjectTitle">Nhập thông tin môn học</h3>
+                        
+                        <div class="form-row three-cols">
+                            <div class="input-wrapper flex-2">
+                                <input type="text" id="subject-name" placeholder=" " autocomplete="off">
+                                <label data-i18n="subjectNameLabel">Tên môn học (Ví dụ: Toán Cao Cấp)</label>
+                            </div>
+                            
+                            <div class="input-wrapper flex-1">
+                                <input type="number" id="subject-credits" placeholder=" " min="1" max="10" value="3">
+                                <label data-i18n="creditsLabel">Số tín chỉ</label>
+                            </div>
+
+                            <div class="input-wrapper flex-1">
+                                <select id="weight-select">
+                                    <option value="5:5">50% - 50%</option>
+                                    <option value="4:6">40% - 60%</option>
+                                    <option value="3:7">30% - 70%</option>
+                                    <option value="2:3:5">20% - 30% - 50%</option>
+                                    <option value="100">100% (Đồ án)</option>
+                                </select>
+                                <label data-i18n="weightLabel">Tỷ lệ điểm</label>
+                            </div>
+                        </div>
+
+                        <div id="dynamic-inputs" class="inputs-grid">
+                            </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary full-width hover-scale" id="btn-calc-now">
+                                <span class="icon">🖩</span> <span data-i18n="calcBtn">Tính kết quả ngay</span>
+                            </button>
+                            <button class="btn btn-outline" id="btn-reset-calc" title="Làm mới">↺</button>
+                        </div>
+                    </div>
+
+                    <div id="calc-result" class="result-card glass-card hidden">
+                        <div class="result-header">
+                            <span data-i18n="resultTitle">KẾT QUẢ MÔN HỌC</span>
+                            <button class="btn-close" onclick="UI.hideResult()">✕</button>
+                        </div>
+                        <div class="result-body">
+                            <div class="score-circle-wrapper">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring__circle-bg" stroke="#eee" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                    <circle class="progress-ring__circle" stroke="var(--primary)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                </svg>
+                                <span id="res-score-number">0.0</span>
+                            </div>
+                            <div class="score-details">
+                                <h3 id="res-grade-text" class="text-grade">Điểm A</h3>
+                                <p id="res-status-text" class="status-badge pass">QUA MÔN</p>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <p data-i18n="autoSaveNote" id="autosave-note">✅ Kết quả đã được tự động lưu.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history" class="page-section fade-in">
+                <div class="glass-card full-height relative-container">
+                    <div class="history-header">
+                        <h2 data-i18n="historyTitle">Lịch sử tính toán</h2>
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="history-search" placeholder="Tìm kiếm môn học..." data-i18n-placeholder="searchPlaceholder">
+                        </div>
+                    </div>
+                    
+                    <div id="folder-container" class="folder-list-row">
+                        </div>
+
+                    <div class="controls-row">
+                        <div class="filter-tabs">
+                            <button class="filter-chip active" data-filter="all" data-i18n="filterAll">Tất cả</button>
+                            <button class="filter-chip" data-filter="pass" data-i18n="filterPass">Đậu</button>
+                            <button class="filter-chip" data-filter="fail" data-i18n="filterFail">Rớt</button>
+                        </div>
+                        
+                        <div class="fancy-date-wrapper">
+                            <div class="date-icon">📅</div>
+                            <input type="date" id="history-date-filter" class="fancy-date-input">
+                            <button class="btn-clear-date" id="btn-clear-date" title="Xóa lọc ngày">✕</button>
+                        </div>
+                    </div>
+
+                    <div id="selection-action-bar" class="selection-bar hidden">
+                        <span class="selection-count">Đã chọn: <b id="sel-count">0</b></span>
+                        <div class="selection-buttons">
+                            <button class="btn btn-sm btn-primary" id="btn-create-folder">
+                                📁 Tạo thư mục
+                            </button>
+                            <button class="btn btn-sm btn-danger" id="btn-delete-multi">
+                                🗑️ Xóa
+                            </button>
+                            <button class="btn btn-sm btn-outline" id="btn-cancel-sel">Hủy</button>
+                        </div>
+                    </div>
+
+                    <div class="table-header-row">
+                        <span class="col-check">
+                            <input type="checkbox" id="check-all-history" class="custom-checkbox">
+                        </span>
+                        <span class="col-sub">Môn học</span>
+                        <span class="col-type">Tỷ lệ</span>
+                        <span class="col-cred">Tín chỉ</span>
+                        <span class="col-score">Điểm</span>
+                        <span class="col-act">Hành động</span>
+                    </div>
+
+                    <div id="history-list" class="history-list-container scroll-custom">
+                        <div class="empty-state">
+                            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" alt="Empty" width="60">
+                            <p data-i18n="emptyHistory">Chưa có dữ liệu nào</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="page-section fade-in">
+                <h2 class="page-title" data-i18n="navSettings">Cài đặt tài khoản</h2>
+                <div class="settings-grid">
+                    
+                    <div class="glass-card settings-card">
+                        <h3 data-i18n="personalInfo">Thông tin cá nhân</h3>
+                        <div class="profile-edit-area">
+                            <div class="avatar-upload-wrapper">
+                                <img src="images/DefaultProfilePic.jpg" id="settings-avatar" alt="Avatar">
+                                <label for="avatar-input" class="edit-btn" title="Đổi ảnh">✎</label>
+                                <input type="file" id="avatar-input" accept="image/png, image/jpeg, image/gif, image/webp" hidden>
+                            </div>
+                            <div class="profile-inputs">
+                                <div class="input-wrapper tight">
+                                    <input type="text" id="set-username" readonly>
+                                    <label data-i18n="accountName">Tên đăng nhập</label>
+                                    <button class="btn-text-action" id="btn-change-username" data-i18n="changeBtn">Thay đổi</button>
+                                </div>
+                                <small class="hint-text" id="cooldown-msg">Đổi lại sau: <span id="cooldown-timer">00:00</span></small>
+                                
+                                <div class="input-wrapper tight mt-2">
+                                    <input type="text" id="set-nickname">
+                                    <label data-i18n="nickname">Biệt danh (Hiển thị)</label>
+                                    <button class="btn-text-action" id="btn-save-nick" data-i18n="saveBtn">Lưu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card settings-card">
+                        <h3 data-i18n="appSettings">Tùy chỉnh ứng dụng</h3>
+                        
+                        <div class="setting-row">
+                            <div class="label-box">
+                                <div class="icon-setting">🌙</div>
+                                <div>
+                                    <span class="setting-title" data-i18n="darkMode">Chế độ Tối (Dark Mode)</span>
+                                    <p class="desc">Giao diện tối giúp bảo vệ mắt ban đêm</p>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-theme">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="label-box">
+                                <div class="icon-setting">💾</div>
+                                <div>
+                                    <span class="setting-title" data-i18n="autoSave">Tự động lưu điểm</span>
+                                    <p class="desc">Lưu kết quả ngay khi bấm tính</p>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-autosave">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="label-box">
+                                <div class="icon-setting">🌐</div>
+                                <div>
+                                    <span class="setting-title" data-i18n="language">Ngôn ngữ / Language</span>
+                                </div>
+                            </div>
+                            <div class="lang-selector">
+                                <button class="lang-btn active" data-lang="vi">🇻🇳 VI</button>
+                                <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card settings-card">
+                        <h3 data-i18n="changePass">Bảo mật</h3>
+                        <div class="input-wrapper">
+                            <input type="password" id="old-pass" placeholder=" ">
+                            <label data-i18n="oldPass">Mật khẩu hiện tại</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="password" id="new-pass" placeholder=" ">
+                            <label data-i18n="newPass">Mật khẩu mới</label>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="btn-change-pass" data-i18n="saveChangeBtn">Cập nhật mật khẩu</button>
+                    </div>
+
+                    <div class="glass-card danger-zone">
+                        <h3 data-i18n="accountMgmt">Vùng nguy hiểm</h3>
+                        <p class="warning-text">Các hành động dưới đây không thể hoàn tác.</p>
+                        <div class="danger-actions">
+                            <button class="btn btn-outline" onclick="Auth.logout()" data-i18n="logoutBtn">Đăng xuất</button>
+                            <button class="btn btn-danger" onclick="Auth.deleteAccount()" data-i18n="deleteAccBtn">Xóa vĩnh viễn tài khoản</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <div id="crop-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <h3>Chỉnh sửa ảnh đại diện</h3>
+            <div class="crop-container">
+                <img id="crop-image" src="" alt="Image to crop">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="App.closeCropModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="App.saveCrop()">Lưu Thay Đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
