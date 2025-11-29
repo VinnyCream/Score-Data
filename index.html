@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="style.css">
     
@@ -31,7 +33,7 @@
             <div class="auth-header">
                 <div class="logo-area">
                     <div class="logo-icon-lg">
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                     <h1 class="app-name">Score Data</h1>
                     <p class="app-slogan" data-i18n="welcomeSub">Hệ thống quản lý điểm số sinh viên</p>
@@ -44,20 +46,20 @@
                 <div class="input-wrapper">
                     <input type="text" id="login-username" placeholder=" " autocomplete="username">
                     <label data-i18n="usernameLabel">Tên đăng nhập</label>
-                    <span class="input-icon">👤</span>
+                    <span class="input-icon"><i class="fa-regular fa-user"></i></span>
                 </div>
 
                 <div class="input-wrapper">
                     <input type="password" id="login-password" placeholder=" " autocomplete="current-password">
                     <label data-i18n="passwordLabel">Mật khẩu</label>
                     <span class="toggle-password" onclick="App.togglePassword('login-password')">
-                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <i class="fa-regular fa-eye"></i>
                     </span>
                 </div>
 
                 <button class="btn btn-primary full-width hover-scale shimmer-effect" id="btn-login">
                     <span data-i18n="loginBtn">Đăng nhập</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
 
                 <div class="divider"><span data-i18n="orText">HOẶC</span></div>
@@ -79,14 +81,14 @@
                 <div class="input-wrapper">
                     <input type="text" id="reg-username" placeholder=" " autocomplete="off">
                     <label data-i18n="usernameLabel">Tên đăng nhập</label>
-                    <span class="input-icon">👤</span>
+                    <span class="input-icon"><i class="fa-regular fa-user"></i></span>
                 </div>
 
                 <div class="input-wrapper">
                     <input type="password" id="reg-password" placeholder=" ">
                     <label data-i18n="passwordLabel">Mật khẩu</label>
                     <span class="toggle-password" onclick="App.togglePassword('reg-password')">
-                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <i class="fa-regular fa-eye"></i>
                     </span>
                 </div>
 
@@ -108,23 +110,27 @@
         <aside class="sidebar">
             <div class="brand">
                 <div class="logo-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <span class="brand-text">Score Data</span>
             </div>
             
             <nav class="nav-menu">
                 <button class="nav-item active" data-target="dashboard">
-                    <span class="icon">📊</span> <span data-i18n="navDashboard">Tổng quan</span>
+                    <span class="icon"><i class="fa-solid fa-chart-pie"></i></span> 
+                    <span data-i18n="navDashboard">Tổng quan</span>
                 </button>
                 <button class="nav-item" data-target="calculator">
-                    <span class="icon">🧮</span> <span data-i18n="navCalculator">Tính điểm</span>
+                    <span class="icon"><i class="fa-solid fa-calculator"></i></span> 
+                    <span data-i18n="navCalculator">Tính điểm</span>
                 </button>
                 <button class="nav-item" data-target="history">
-                    <span class="icon">📜</span> <span data-i18n="navHistory">Lịch sử</span>
+                    <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span> 
+                    <span data-i18n="navHistory">Lịch sử</span>
                 </button>
                 <button class="nav-item" data-target="settings">
-                    <span class="icon">⚙️</span> <span data-i18n="navSettings">Cài đặt</span>
+                    <span class="icon"><i class="fa-solid fa-gear"></i></span> 
+                    <span data-i18n="navSettings">Cài đặt</span>
                 </button>
             </nav>
 
@@ -139,7 +145,7 @@
                         <div id="mini-username" class="role">@guest</div>
                     </div>
                     <button id="btn-logout-mini" class="btn-icon-sm" title="Đăng xuất">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
@@ -151,11 +157,11 @@
             
             <header class="mobile-header">
                 <div class="logo-area-mobile">
-                    <div class="logo-icon-sm">🔐</div>
+                    <div class="logo-icon-sm"><i class="fa-solid fa-graduation-cap"></i></div>
                     <span>Score Data</span>
                 </div>
                 <button id="mobile-menu-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </header>
 
@@ -192,7 +198,7 @@
                     <div class="sub-stats-grid">
                         <div class="stat-card glass-card">
                             <div class="icon-box green">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                <i class="fa-regular fa-circle-check"></i>
                             </div>
                             <div class="info">
                                 <h4 data-i18n="statPass">Qua môn</h4>
@@ -201,7 +207,7 @@
                         </div>
                         <div class="stat-card glass-card">
                             <div class="icon-box red">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                                <i class="fa-regular fa-circle-xmark"></i>
                             </div>
                             <div class="info">
                                 <h4 data-i18n="statFail">Rớt môn</h4>
@@ -210,7 +216,7 @@
                         </div>
                         <div class="stat-card glass-card">
                             <div class="icon-box blue">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <i class="fa-solid fa-layer-group"></i>
                             </div>
                             <div class="info">
                                 <h4 data-i18n="statCredits">Tín Chỉ</h4>
@@ -267,16 +273,18 @@
 
                         <div class="action-buttons">
                             <button class="btn btn-primary full-width hover-scale" id="btn-calc-now">
-                                <span class="icon">🖩</span> <span data-i18n="calcBtn">Tính kết quả ngay</span>
+                                <span class="icon"><i class="fa-solid fa-calculator"></i></span> <span data-i18n="calcBtn">Tính kết quả ngay</span>
                             </button>
-                            <button class="btn btn-outline" id="btn-reset-calc" title="Làm mới">↺</button>
+                            <button class="btn btn-outline" id="btn-reset-calc" title="Làm mới">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div id="calc-result" class="result-card glass-card hidden">
+                    <div id="calc-result" class="result-card hidden">
                         <div class="result-header">
                             <span data-i18n="resultTitle">KẾT QUẢ MÔN HỌC</span>
-                            <button class="btn-close" onclick="UI.hideResult()">✕</button>
+                            <button class="btn-close" onclick="UI.hideResult()"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                         <div class="result-body">
                             <div class="score-circle-wrapper">
@@ -286,13 +294,27 @@
                                 </svg>
                                 <span id="res-score-number">0.0</span>
                             </div>
+                            
                             <div class="score-details">
                                 <h3 id="res-grade-text" class="text-grade">Điểm A</h3>
+                                
+                                <div class="score-breakdown">
+                                    <div class="score-item">
+                                        <span class="label">Thang 10</span>
+                                        <span class="value" id="res-score-10">0.0</span>
+                                    </div>
+                                    <div class="vertical-sep"></div>
+                                    <div class="score-item">
+                                        <span class="label">Thang 4</span>
+                                        <span class="value" id="res-score-4">0.0</span>
+                                    </div>
+                                </div>
+
                                 <p id="res-status-text" class="status-badge pass">QUA MÔN</p>
                             </div>
                         </div>
                         <div class="result-footer">
-                            <p data-i18n="autoSaveNote" id="autosave-note">✅ Kết quả đã được tự động lưu.</p>
+                            <p data-i18n="autoSaveNote" id="autosave-note"><i class="fa-solid fa-check"></i> Kết quả đã được tự động lưu.</p>
                         </div>
                     </div>
                 </div>
@@ -303,7 +325,7 @@
                     <div class="history-header">
                         <h2 data-i18n="historyTitle">Lịch sử tính toán</h2>
                         <div class="search-box">
-                            <span class="search-icon">🔍</span>
+                            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                             <input type="text" id="history-search" placeholder="Tìm kiếm môn học..." data-i18n-placeholder="searchPlaceholder">
                         </div>
                     </div>
@@ -318,17 +340,17 @@
                         </div>
                         
                         <div class="fancy-date-wrapper">
-                            <div class="date-icon">📅</div>
+                            <div class="date-icon"><i class="fa-regular fa-calendar"></i></div>
                             <input type="date" id="history-date-filter" class="fancy-date-input">
-                            <button class="btn-clear-date" id="btn-clear-date" title="Xóa lọc ngày">✕</button>
+                            <button class="btn-clear-date" id="btn-clear-date" title="Xóa lọc ngày"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
 
                     <div id="selection-action-bar" class="selection-bar hidden">
                         <span class="selection-count">Đã chọn: <b id="sel-count">0</b></span>
                         <div class="selection-buttons">
-                            <button class="btn btn-sm btn-action-high-contrast" id="btn-create-folder">📁 Tạo Folder</button>
-                            <button class="btn btn-sm btn-danger-high-contrast" id="btn-delete-multi">🗑️ Xóa</button>
+                            <button class="btn btn-sm btn-action-high-contrast" id="btn-create-folder"><i class="fa-regular fa-folder"></i> Tạo Folder</button>
+                            <button class="btn btn-sm btn-danger-high-contrast" id="btn-delete-multi"><i class="fa-solid fa-trash"></i> Xóa</button>
                             <button class="btn btn-sm btn-outline-high-contrast" id="btn-cancel-sel">Hủy</button>
                         </div>
                     </div>
@@ -363,7 +385,7 @@
                         <div class="profile-edit-area">
                             <div class="avatar-upload-wrapper">
                                 <img src="images/DefaultProfilePic.jpg" id="settings-avatar" alt="Avatar">
-                                <label for="avatar-input" class="edit-btn" title="Đổi ảnh">✎</label>
+                                <label for="avatar-input" class="edit-btn" title="Đổi ảnh"><i class="fa-solid fa-pen"></i></label>
                                 <input type="file" id="avatar-input" accept="image/png, image/jpeg, image/gif, image/webp" hidden>
                             </div>
                             <div class="profile-inputs">
@@ -388,7 +410,7 @@
                         
                         <div class="setting-row">
                             <div class="label-box">
-                                <div class="icon-setting">🌙</div>
+                                <div class="icon-setting"><i class="fa-solid fa-moon"></i></div>
                                 <div>
                                     <span class="setting-title" data-i18n="darkMode">Chế độ Tối (Dark Mode)</span>
                                     <p class="desc">Giao diện tối giúp bảo vệ mắt ban đêm</p>
@@ -400,9 +422,9 @@
                             </label>
                         </div>
 
-                        <div class="setting-row">
+                        <div class="setting-row" id="setting-row-autosave">
                             <div class="label-box">
-                                <div class="icon-setting">💾</div>
+                                <div class="icon-setting"><i class="fa-solid fa-floppy-disk"></i></div>
                                 <div>
                                     <span class="setting-title" data-i18n="autoSave">Tự động lưu điểm</span>
                                     <p class="desc">Lưu kết quả ngay khi bấm tính</p>
@@ -414,15 +436,29 @@
                             </label>
                         </div>
 
+                        <div class="setting-row stacked">
+                            <div class="label-box">
+                                <div class="icon-setting"><i class="fa-solid fa-building-columns"></i></div>
+                                <div>
+                                    <span class="setting-title" data-i18n="gradingScaleTitle">Quy chế quy đổi điểm (Trường)</span>
+                                    <p class="desc" data-i18n="gradingScaleDesc">Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.</p>
+                                </div>
+                            </div>
+                            <select id="grading-scale-select" class="setting-select-box">
+                                <option value="HUFLIT">Trường Đại học Ngoại ngữ - Tin Học (HUFLIT)</option>
+                                <option value="HUIT">Trường Đại học Công thương (HUIT)</option>
+                            </select>
+                        </div>
+
                         <div class="setting-row">
                             <div class="label-box">
-                                <div class="icon-setting">🌐</div>
+                                <div class="icon-setting"><i class="fa-solid fa-globe"></i></div>
                                 <div>
                                     <span class="setting-title" data-i18n="language">Ngôn ngữ / Language</span>
                                 </div>
                             </div>
                             <div class="lang-selector">
-                                <button class="lang-btn active" data-lang="vi">🇻🇳 VI</button>
+                                <button class="lang-btn active" data-lang="vi">🇻🇳 VN</button>
                                 <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
                             </div>
                         </div>

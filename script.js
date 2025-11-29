@@ -1,6 +1,6 @@
 /**
  * SCOREMASTER PRO - CORE JAVASCRIPT
- * Version: 4.1.0 (Enhanced UI & Contrast Fix)
+ * Version: 4.5.0 (FontAwesome Integration & Detailed Result Breakdown)
  * Architecture: Modular Object Literal Pattern
  */
 
@@ -8,7 +8,7 @@
 // 1. DEV CONTROL & CONFIG
 // ==========================================
 const CONFIG = {
-    APP_VERSION: '4.1.0 Pro',
+    APP_VERSION: '4.5.0 Pro',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, // 5 minutes
@@ -18,7 +18,61 @@ const CONFIG = {
     // Storage Keys
     KEY_USERS: 'sm_users_v3',
     KEY_SESSION: 'sm_session_v3',
-    KEY_GUEST: 'sm_guest_data_v3'
+    KEY_GUEST: 'sm_guest_data_v3',
+    DEFAULT_SCALE: 'HUFLIT' // Default University Logic
+};
+
+// ==========================================
+// 2. GRADING RULES LOGIC
+// ==========================================
+const GRADING_RULES = {
+    // Logic 1: HUFLIT (Current Logic)
+    'HUFLIT': {
+        name: "ĐH Ngoại ngữ - Tin Học (HUFLIT)",
+        get: (score) => {
+            let grade = 'F';
+            let gpa = 0.0;
+            
+            // Letter Grade Logic (Specific to current implementation)
+            if (score >= 9.0) grade = 'A+';
+            else if (score >= 8.5) grade = 'A';
+            else if (score >= 8.0) grade = 'B+';
+            else if (score >= 7.0) grade = 'B';
+            else if (score >= 6.5) grade = 'C+';
+            else if (score >= 5.5) grade = 'C';
+            else if (score >= 5.0) grade = 'D+';
+            else if (score >= 4.0) grade = 'D';
+            else grade = 'F';
+
+            // Scale 4 Logic (Based on HUFLIT standard usually found in existing code)
+            if (score >= 8.5) gpa = 4.0;
+            else if (score >= 7.0) gpa = 3.0;
+            else if (score >= 5.5) gpa = 2.0;
+            else if (score >= 4.0) gpa = 1.0;
+            else gpa = 0.0;
+
+            return { grade, gpa };
+        }
+    },
+    // Logic 2: HUIT (ĐH Công thương)
+    'HUIT': {
+        name: "ĐH Công thương (HUIT)",
+        get: (score) => {
+            let grade = 'F';
+            let gpa = 0.0;
+            
+            if (score >= 8.5) { grade = 'A'; gpa = 4.0; }
+            else if (score >= 8.0) { grade = 'B+'; gpa = 3.5; }
+            else if (score >= 7.0) { grade = 'B'; gpa = 3.0; }
+            else if (score >= 6.5) { grade = 'C+'; gpa = 2.5; }
+            else if (score >= 5.5) { grade = 'C'; gpa = 2.0; }
+            else if (score >= 5.0) { grade = 'D+'; gpa = 1.5; }
+            else if (score >= 4.0) { grade = 'D'; gpa = 1.0; }
+            else { grade = 'F'; gpa = 0.0; }
+
+            return { grade, gpa };
+        }
+    }
 };
 
 // Language Dictionary
@@ -71,6 +125,8 @@ const LANG = {
         darkMode: "Chế độ Tối (Dark Mode)",
         autoSave: "Tự động lưu điểm",
         language: "Ngôn ngữ / Language",
+        gradingScaleTitle: "Quy chế quy đổi điểm (Trường)",
+        gradingScaleDesc: "Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.",
         changePass: "Bảo mật",
         oldPass: "Mật khẩu hiện tại",
         newPass: "Mật khẩu mới",
@@ -93,7 +149,8 @@ const LANG = {
         errorCooldown: "Vui lòng đợi 5 phút để đổi tên lại.",
         errorFile: "File quá lớn (>21MB).",
         errorPass: "Mật khẩu cũ không đúng.",
-        confirmDelete: "Bạn có chắc chắn muốn xóa tài khoản này? Dữ liệu sẽ mất vĩnh viễn."
+        confirmDelete: "Bạn có chắc chắn muốn xóa tài khoản này? Dữ liệu sẽ mất vĩnh viễn.",
+        settingUpdated: "Đã cập nhật cài đặt!"
     },
     en: {
         welcomeTitle: "ScoreMaster",
@@ -143,6 +200,8 @@ const LANG = {
         darkMode: "Dark Mode",
         autoSave: "Auto Save Results",
         language: "Language",
+        gradingScaleTitle: "Grading System (University)",
+        gradingScaleDesc: "Select your university for accurate GPA and grading logic.",
         changePass: "Security",
         oldPass: "Current Password",
         newPass: "New Password",
@@ -165,12 +224,13 @@ const LANG = {
         errorCooldown: "Please wait 5 mins to rename.",
         errorFile: "File too big (>21MB).",
         errorPass: "Incorrect old password.",
-        confirmDelete: "Are you sure? This cannot be undone."
+        confirmDelete: "Are you sure? This cannot be undone.",
+        settingUpdated: "Settings updated!"
     }
 };
 
 // ==========================================
-// 2. STORAGE MANAGER
+// 3. STORAGE MANAGER
 // ==========================================
 const Storage = {
     getUsers: () => {
@@ -216,7 +276,7 @@ const Storage = {
             folders: [],
             settings: { 
                 theme: 'light', lang: 'vi', autoSave: false,
-                dashboardSource: 'all'
+                dashboardSource: 'all', gradingScale: CONFIG.DEFAULT_SCALE
             },
             createdAt: Date.now()
         };
@@ -224,7 +284,7 @@ const Storage = {
 };
 
 // ==========================================
-// 3. AUTHENTICATION SYSTEM
+// 4. AUTHENTICATION SYSTEM
 // ==========================================
 const Auth = {
     currentUser: null,
@@ -257,7 +317,11 @@ const Auth = {
             lastRenamed: 0,
             history: [],
             folders: [],
-            settings: { theme: 'light', lang: 'vi', autoSave: false, dashboardSource: 'all' }
+            settings: { 
+                theme: 'light', lang: 'vi', 
+                autoSave: true, 
+                dashboardSource: 'all', gradingScale: CONFIG.DEFAULT_SCALE 
+            }
         };
 
         const users = Storage.getUsers();
@@ -315,7 +379,7 @@ const Auth = {
 };
 
 // ==========================================
-// 4. CALCULATOR LOGIC
+// 5. CALCULATOR LOGIC
 // ==========================================
 const Calculator = {
     calculateSubjectScore: (inputs, type) => {
@@ -337,24 +401,11 @@ const Calculator = {
         return Math.round(score * 100) / 100;
     },
 
-    getGrade: (score) => {
-        if (score >= 9.0) return 'A+';
-        if (score >= 8.5) return 'A';
-        if (score >= 8.0) return 'B+';
-        if (score >= 7.0) return 'B';
-        if (score >= 6.5) return 'C+';
-        if (score >= 5.5) return 'C';
-        if (score >= 5.0) return 'D+';
-        if (score >= 4.0) return 'D';
-        return 'F';
-    },
-
-    convertToScale4: (score) => {
-        if (score >= 8.5) return 4.0; 
-        if (score >= 7.0) return 3.0; 
-        if (score >= 5.5) return 2.0; 
-        if (score >= 4.0) return 1.0; 
-        return 0.0;
+    // Unified info getter based on Settings
+    getGradingInfo: (score) => {
+        const scale = (App.currentUser && App.currentUser.settings.gradingScale) ? App.currentUser.settings.gradingScale : CONFIG.DEFAULT_SCALE;
+        const rule = GRADING_RULES[scale] || GRADING_RULES['HUFLIT'];
+        return rule.get(score);
     },
 
     calculateGPA: (history) => {
@@ -366,7 +417,9 @@ const Calculator = {
 
         history.forEach(item => {
             const score10 = parseFloat(item.score);
-            const score4 = Calculator.convertToScale4(score10);
+            // Get GPA 4 based on CURRENT settings logic
+            const gradingInfo = Calculator.getGradingInfo(score10);
+            const score4 = gradingInfo.gpa;
             const cred = parseInt(item.credits) || 0; 
             
             totalPoints10 += score10 * cred;
@@ -384,7 +437,7 @@ const Calculator = {
 };
 
 // ==========================================
-// 5. UI MANAGER & CHARTS
+// 6. UI MANAGER & CHARTS
 // ==========================================
 const UI = {
     chartInstances: {},
@@ -415,9 +468,9 @@ const UI = {
         toast.className = `toast ${type}`;
         
         let icon = '';
-        if(type==='success') icon = '✅';
-        if(type==='error') icon = '⛔';
-        if(type==='info') icon = 'ℹ️';
+        if(type==='success') icon = '<i class="fa-solid fa-check"></i>';
+        if(type==='error') icon = '<i class="fa-solid fa-ban"></i>';
+        if(type==='info') icon = '<i class="fa-solid fa-info"></i>';
 
         toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
         container.appendChild(toast);
@@ -486,8 +539,9 @@ const UI = {
             const isPass = item.score >= 4.0;
             const statusClass = isPass ? 'pass' : 'fail';
             
-            // Calculate Letter Grade dynamically
-            const letterGrade = Calculator.getGrade(parseFloat(item.score));
+            // Get Letter Grade dynamically based on selected school
+            const gradingInfo = Calculator.getGradingInfo(parseFloat(item.score));
+            const letterGrade = gradingInfo.grade;
             
             const div = document.createElement('div');
             div.className = 'history-item';
@@ -496,7 +550,6 @@ const UI = {
             const isChecked = App.selectedItems && App.selectedItems.has(item.id) ? 'checked' : '';
             if (isChecked) div.classList.add('selected');
 
-            // --- REVISED STRUCTURE: Grid Layout compatible with Desktop & Mobile ---
             div.innerHTML = `
                 <div class="col-check">
                     <input type="checkbox" class="custom-checkbox item-checkbox" ${isChecked} onclick="event.stopPropagation(); App.toggleSelection(${item.id})">
@@ -522,7 +575,7 @@ const UI = {
                 </div>
                 
                 <div class="col-act">
-                    <button class="btn-icon-sm" onclick="event.stopPropagation(); App.deleteHistoryItem(${item.id})">🗑️</button>
+                    <button class="btn-icon-sm" onclick="event.stopPropagation(); App.deleteHistoryItem(${item.id})"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
             div.onclick = (e) => {
@@ -546,13 +599,14 @@ const UI = {
             
             if (sc >= 4.0) pass++; else fail++;
             
-            let g = 'F';
-            if(sc >= 8.5) g = 'A';
-            else if(sc >= 7.0) g = 'B';
-            else if(sc >= 5.5) g = 'C';
-            else if(sc >= 4.0) g = 'D';
-            
-            gradeDist[g]++;
+            // Calculate distribution based on current Logic
+            const info = Calculator.getGradingInfo(sc);
+            let g = info.grade.charAt(0); // Take first letter (A+, A -> A)
+            if (['A','B','C','D','F'].includes(g)) {
+                gradeDist[g]++;
+            } else {
+                gradeDist['F']++;
+            }
         });
 
         const gpaData = Calculator.calculateGPA(history);
@@ -656,17 +710,18 @@ const UI = {
 };
 
 // ==========================================
-// 6. MAIN CONTROLLER
+// 7. MAIN CONTROLLER
 // ==========================================
 const App = {
     currentUser: null,
     selectedItems: new Set(),
-    cropper: null, // Cropper Instance
+    cropper: null,
 
     loadUser: (user) => {
         App.currentUser = user;
         if(!App.currentUser.folders) App.currentUser.folders = [];
         if(!App.currentUser.settings.dashboardSource) App.currentUser.settings.dashboardSource = 'all';
+        if(!App.currentUser.settings.gradingScale) App.currentUser.settings.gradingScale = CONFIG.DEFAULT_SCALE;
 
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('app-screen').style.display = 'flex';
@@ -694,6 +749,18 @@ const App = {
         document.body.setAttribute('data-theme', u.settings.theme);
         document.getElementById('toggle-autosave').checked = u.settings.autoSave;
         
+        const autoSaveRow = document.getElementById('setting-row-autosave');
+        if (autoSaveRow) {
+            if (u.id === 'guest') {
+                autoSaveRow.style.display = 'none';
+            } else {
+                autoSaveRow.style.display = 'flex';
+            }
+        }
+
+        const scaleSelect = document.getElementById('grading-scale-select');
+        if(scaleSelect) scaleSelect.value = u.settings.gradingScale || CONFIG.DEFAULT_SCALE;
+
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         document.querySelector(`.lang-btn[data-lang="${u.settings.lang}"]`).classList.add('active');
         
@@ -735,7 +802,7 @@ const App = {
         }
 
         App.cropper = new Cropper(imgElement, {
-            aspectRatio: 1, // Vuông
+            aspectRatio: 1, // Square
             viewMode: 1,
             autoCropArea: 1,
             responsive: true,
@@ -753,8 +820,6 @@ const App = {
 
     saveCrop: () => {
         if (!App.cropper) return;
-
-        // Resize xuống 256x256 để nhẹ
         const canvas = App.cropper.getCroppedCanvas({
             width: 256,
             height: 256,
@@ -791,10 +856,10 @@ const App = {
             if(!e.target.closest('.btn-folder-act')) App.setDashboardSource('all');
         };
         allDiv.innerHTML = `
-            <div class="folder-icon">🗄️</div>
+            <div class="folder-icon"><i class="fa-solid fa-folder-tree"></i></div>
             <div class="folder-name">Tất cả</div>
             <div class="folder-info">${App.currentUser.history.length} mục</div>
-            ${currentSource === 'all' ? '<span class="is-pinned">★</span>' : ''}
+            ${currentSource === 'all' ? '<span class="is-pinned"><i class="fa-solid fa-thumbtack"></i></span>' : ''}
         `;
         container.appendChild(allDiv);
 
@@ -804,15 +869,15 @@ const App = {
             const validItems = f.items.filter(id => App.currentUser.history.find(h => h.id === id));
             
             div.innerHTML = `
-                <div class="folder-icon">📁</div>
+                <div class="folder-icon"><i class="fa-regular fa-folder"></i></div>
                 <div class="folder-name" title="${f.name}">${f.name}</div>
                 <div class="folder-info">${validItems.length} mục</div>
-                ${currentSource === f.id ? '<span class="is-pinned">★</span>' : ''}
+                ${currentSource === f.id ? '<span class="is-pinned"><i class="fa-solid fa-thumbtack"></i></span>' : ''}
                 
                 <div class="folder-actions">
-                    <button class="btn-folder-act" onclick="App.renameFolder('${f.id}')" title="Đổi tên">✏️</button>
-                    <button class="btn-folder-act" onclick="App.setDashboardSource('${f.id}')" title="Ghim lên Dashboard">📌</button>
-                    <button class="btn-folder-act" style="color:red" onclick="App.deleteFolder('${f.id}')" title="Xóa Folder">✕</button>
+                    <button class="btn-folder-act" onclick="App.renameFolder('${f.id}')" title="Đổi tên"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-folder-act" onclick="App.setDashboardSource('${f.id}')" title="Ghim lên Dashboard"><i class="fa-solid fa-thumbtack"></i></button>
+                    <button class="btn-folder-act" style="color:red" onclick="App.deleteFolder('${f.id}')" title="Xóa Folder"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             `;
             div.onclick = (e) => {
@@ -947,7 +1012,6 @@ const App = {
                 document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
                 document.getElementById(btn.dataset.target).classList.add('active');
                 
-                // NÂNG CẤP: Đóng sidebar trên mobile khi chọn menu
                 const sidebar = document.querySelector('.sidebar');
                 if (window.innerWidth < 768) {
                     sidebar.classList.remove('open');
@@ -955,7 +1019,6 @@ const App = {
             };
         });
 
-        // NÂNG CẤP: Nút mở Menu Mobile
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         if(mobileMenuBtn) {
             mobileMenuBtn.onclick = () => {
@@ -972,6 +1035,7 @@ const App = {
             UI.hideResult();
         };
 
+        // --- UPDATE: MAIN CALCULATION LOGIC TO SHOW 4.0 SCALE ---
         document.getElementById('btn-calc-now').onclick = () => {
             const inputs = Array.from(document.querySelectorAll('.calc-input')).map(i => parseFloat(i.value));
             const weightType = document.getElementById('weight-select').value;
@@ -991,8 +1055,13 @@ const App = {
             UI.animateValue('res-score-number', 0, result, 500);
             UI.setResultCircle(result);
             
-            const letterGrade = Calculator.getGrade(result);
-            document.getElementById('res-grade-text').innerText = `Điểm: ${letterGrade} (${result})`;
+            // Get Grading Info (Letter & GPA 4)
+            const gradingInfo = Calculator.getGradingInfo(result);
+            
+            // Update UI with all values
+            document.getElementById('res-grade-text').innerText = `Điểm: ${gradingInfo.grade}`;
+            document.getElementById('res-score-10').innerText = result; // Scale 10
+            document.getElementById('res-score-4').innerText = gradingInfo.gpa; // Scale 4
 
             const isPass = result >= CONFIG.PASS_SCORE;
             const statusEl = document.getElementById('res-status-text');
@@ -1054,10 +1123,8 @@ const App = {
             reader.onload = function(evt) {
                 const result = evt.target.result;
                 if (file.type === 'image/gif') {
-                    // GIF: Save directly to keep animation
                     App.handleSaveAvatar(result);
                 } else {
-                    // Static image: Open Crop Modal
                     App.openCropModal(result);
                 }
             };
@@ -1075,6 +1142,18 @@ const App = {
             App.currentUser.settings.autoSave = e.target.checked;
             Storage.updateCurrentUser(App.currentUser);
         };
+
+        // NEW: Event listener for Grading Scale Change
+        const scaleSelect = document.getElementById('grading-scale-select');
+        if (scaleSelect) {
+            scaleSelect.onchange = (e) => {
+                App.currentUser.settings.gradingScale = e.target.value;
+                Storage.updateCurrentUser(App.currentUser);
+                UI.toast('success', 'settingUpdated');
+                // Recalculate Dashboard & History immediately
+                App.syncUI(); 
+            };
+        }
 
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.onclick = () => {
