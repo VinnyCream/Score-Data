@@ -1,6 +1,6 @@
 /**
  * SCOREMASTER PRO - CORE JAVASCRIPT
- * Version: 4.0.0 (Mobile Responsive Upgrade)
+ * Version: 4.1.0 (Enhanced UI & Contrast Fix)
  * Architecture: Modular Object Literal Pattern
  */
 
@@ -8,7 +8,7 @@
 // 1. DEV CONTROL & CONFIG
 // ==========================================
 const CONFIG = {
-    APP_VERSION: '4.0.0 Pro',
+    APP_VERSION: '4.1.0 Pro',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, // 5 minutes
@@ -486,6 +486,9 @@ const UI = {
             const isPass = item.score >= 4.0;
             const statusClass = isPass ? 'pass' : 'fail';
             
+            // Calculate Letter Grade dynamically
+            const letterGrade = Calculator.getGrade(parseFloat(item.score));
+            
             const div = document.createElement('div');
             div.className = 'history-item';
             div.setAttribute('data-id', item.id);
@@ -493,20 +496,31 @@ const UI = {
             const isChecked = App.selectedItems && App.selectedItems.has(item.id) ? 'checked' : '';
             if (isChecked) div.classList.add('selected');
 
-            // --- NÂNG CẤP: Sử dụng DIV thay vì SPAN để tương thích Grid Layout ---
+            // --- REVISED STRUCTURE: Grid Layout compatible with Desktop & Mobile ---
             div.innerHTML = `
                 <div class="col-check">
                     <input type="checkbox" class="custom-checkbox item-checkbox" ${isChecked} onclick="event.stopPropagation(); App.toggleSelection(${item.id})">
                 </div>
+                
                 <div class="col-sub">
                     <div style="font-weight:700;">${item.subject || 'Subject'}</div>
                     <div style="font-size:0.75rem; color:var(--text-muted)">${dateStr}</div>
                 </div>
+                
                 <div class="col-type">
                     <span class="h-type">${item.type || 'N/A'}</span>
                 </div>
-                <div class="col-cred" style="font-weight:600;">${item.credits} TC</div>
+                
+                <div class="col-cred center-text">
+                   ${item.credits} TC
+                </div>
+
                 <div class="col-score h-score ${statusClass}">${item.score}</div>
+
+                <div class="col-grade center-text ${statusClass}">
+                    ${letterGrade}
+                </div>
+                
                 <div class="col-act">
                     <button class="btn-icon-sm" onclick="event.stopPropagation(); App.deleteHistoryItem(${item.id})">🗑️</button>
                 </div>
@@ -578,7 +592,7 @@ const UI = {
         window.requestAnimationFrame(step);
     },
 
-    // --- NÂNG CẤP: CHART RESPONSIVE ---
+    // --- CHART RESPONSIVE ---
     drawCharts: (distData, history) => {
         const ctx1 = document.getElementById('scoreDistributionChart').getContext('2d');
         if (UI.chartInstances.pie) UI.chartInstances.pie.destroy();
@@ -708,7 +722,7 @@ const App = {
         input.type = input.type === 'password' ? 'text' : 'password';
     },
 
-    // --- CROP AVATAR LOGIC (NEW) ---
+    // --- CROP AVATAR LOGIC ---
     openCropModal: (imageSrc) => {
         const modal = document.getElementById('crop-modal');
         const imgElement = document.getElementById('crop-image');

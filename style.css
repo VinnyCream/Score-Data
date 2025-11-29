@@ -1,5 +1,5 @@
 /* =========================================
-   SCOREMASTER PRO - RESPONSIVE STYLE V4
+   SCOREMASTER PRO - RESPONSIVE STYLE V4.1
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -266,7 +266,7 @@ body {
 .status-badge.fail { background: var(--danger); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
 .result-footer { margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; font-size: 0.85rem; color: var(--success); text-align: center; font-weight: 600; }
 
-/* --- 6. HISTORY & TABLE --- */
+/* --- 6. HISTORY & TABLE (UPDATED) --- */
 .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
 .search-box { 
     background: var(--input-bg); border-radius: 20px; padding: 8px 16px; 
@@ -299,31 +299,63 @@ body {
 .fancy-date-input { border: none; background: transparent; color: var(--text-main); font-weight: 500; outline: none; }
 .btn-clear-date { background: none; border: none; color: var(--text-muted); cursor: pointer; font-weight: 700; margin-left: 5px; }
 
-/* Table Grid System */
-.table-header-row { display: grid; grid-template-columns: 40px 3fr 1fr 1fr 1fr 50px; padding: 10px 15px; font-weight: 700; color: var(--text-muted); border-bottom: 2px solid var(--glass-border); font-size: 0.85rem; }
+/* Table Grid System (NEW) */
+.table-header-row { 
+    display: grid; 
+    /* Check | Subject | Type | Cred | Score | Grade | Act */
+    grid-template-columns: 40px 3fr 1fr 1fr 1fr 1fr 50px; 
+    padding: 10px 15px; font-weight: 700; color: var(--text-muted); 
+    border-bottom: 2px solid var(--glass-border); font-size: 0.85rem; 
+    align-items: center; /* Center Vertically */
+}
+
 .history-item { 
-    display: grid; grid-template-columns: 40px 3fr 1fr 1fr 1fr 50px; 
+    display: grid; 
+    grid-template-columns: 40px 3fr 1fr 1fr 1fr 1fr 50px; 
     align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--glass-border); 
     transition: background 0.2s; position: relative;
 }
+
 .history-item:hover { background: rgba(255,255,255,0.3); }
 .col-check { display: flex; align-items: center; justify-content: center; }
 .col-act { text-align: right; }
-.h-score { font-weight: 800; font-size: 1.1rem; text-align: center; }
-.h-score.pass { color: var(--success); } .h-score.fail { color: var(--danger); }
+
+.center-text { text-align: center; } /* Helper for headers */
+
+/* Score and Grade Styling */
+.col-score, .col-grade { 
+    display: flex; align-items: center; justify-content: center; 
+    font-weight: 800; font-size: 1.1rem; 
+}
+.col-score.pass, .col-grade.pass { color: var(--success); }
+.col-score.fail, .col-grade.fail { color: var(--danger); }
+
 .custom-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
 .history-item.selected { background: rgba(79, 70, 229, 0.1) !important; border-color: var(--primary); }
 
-/* Selection Bar */
+/* Selection Bar (High Contrast Fix) */
 .selection-bar {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    background: var(--text-main); color: var(--bg-gradient-3);
+    background: #1F2937; /* Dark Background always */
+    color: #FFFFFF; /* White Text always */
     padding: 12px 24px; border-radius: 40px;
     display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500; width: 90%; max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 500; width: 90%; max-width: 500px;
     animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-[data-theme="dark"] .selection-bar { background: white; color: black; }
+.btn-action-high-contrast {
+    background: rgba(255,255,255,0.2); 
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #FFF; font-weight: 600;
+}
+.btn-outline-high-contrast {
+    background: transparent;
+    border: 1px solid #9CA3AF;
+    color: #D1D5DB;
+}
+.btn-danger-high-contrast {
+    background: #EF4444; color: white; border: none;
+}
 
 /* --- 7. AUTH & SETTINGS --- */
 .main-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -424,33 +456,116 @@ input:checked + .slider:before { transform: translateX(22px); }
     .three-cols { flex-direction: column; gap: 15px; }
     .result-card { border-radius: 16px; border: 2px solid var(--primary); }
 
-    /* History Table -> Card List Transformation */
+    /* --- IMPORTANT: Mobile History Card Fix --- */
     .table-header-row { display: none; } /* Hide headers */
     
     .history-item {
         display: grid; 
+        /* Layout:
+           [ Checkbox ] [ Subject Name ............... ] [ Delete ]
+           [          ] [ Credits | Ratio | Grade      ] [ Score  ] 
+        */
         grid-template-columns: 30px 1fr auto; 
         grid-template-rows: auto auto;
-        gap: 6px 12px;
+        gap: 8px 10px;
         padding: 16px;
         background: rgba(255,255,255,0.4);
         border-radius: 16px;
         margin-bottom: 10px;
-        border: 1px solid transparent;
+        border: 1px solid var(--glass-border);
+        align-items: center;
     }
-    .col-check { grid-column: 1; grid-row: 1 / span 2; justify-self: start; }
-    .col-sub { grid-column: 2; grid-row: 1; font-size: 1rem; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    /* Combine credits and type into row 2 */
-    .col-type, .col-cred { display: inline-block; grid-column: 2; grid-row: 2; font-size: 0.8rem; text-align: left; }
-    .col-type::after { content: " • "; color: var(--text-light); }
-    .col-cred::before { content: ""; }
+    /* 1. Checkbox: Row 1-2, Left */
+    .col-check { 
+        grid-column: 1; grid-row: 1 / span 2; 
+        align-self: center; justify-self: start; 
+    }
+
+    /* 2. Subject: Row 1, Middle (Bold) */
+    .col-sub { 
+        grid-column: 2; grid-row: 1; 
+        font-size: 1rem; width: 100%; 
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        font-weight: 700; color: var(--text-main);
+    }
+    .col-sub div:last-child { display: none; } /* Hide date in sub-text if redundant, or keep styling */
+
+    /* 3. Delete Action: Row 1, Right (Top Right Corner) */
+    .col-act { 
+        grid-column: 3; grid-row: 1; 
+        text-align: right; 
+        position: relative; right: -5px; top: -2px;
+    }
+
+    /* 4. Meta Info (Credits, Type, Grade Letter): Row 2, Middle */
+    /* Use flex to group them nicely */
+    .col-type, .col-cred, .col-grade {
+        grid-column: 2; grid-row: 2;
+        display: inline-flex; 
+        font-size: 0.85rem; color: var(--text-muted);
+        font-weight: 500;
+    }
+    /* Hide the individual divs from grid layout and use specific wrapping if needed, 
+       but here we can just display them. To make them flow: */
+    .col-type, .col-cred, .col-grade { display: none; } /* Reset */
+
+    /* Create a pseudo-element or wrapper in JS would be better, but with current structure: */
+    /* We will use specific styling for the mobile card via JS injection or CSS tricks.
+       BETTER FIX: Redefine the grid areas cleanly. */
     
-    /* Score big on the right */
-    .col-score { grid-column: 3; grid-row: 1 / span 2; text-align: right; align-self: center; font-size: 1.4rem; }
+    .col-info-group {
+        grid-column: 2; grid-row: 2;
+        display: flex; gap: 8px; align-items: center;
+        font-size: 0.8rem; color: var(--text-muted);
+    }
     
-    /* Action Button (Delete) */
-    .col-act { display: block; position: absolute; right: 10px; bottom: 10px; }
+    /* Since we can't easily group existing divs without JS changing structure, 
+       we force them to overlap in grid-row 2 and style them as inline blocks? 
+       No, that overlaps. 
+       Solution: In JS I will structure the mobile view slightly differently or use flex.
+       
+       CSS Only Solution for provided HTML structure:
+    */
+    .col-cred { 
+        display: inline-block; grid-column: 2; grid-row: 2; 
+        justify-self: start;
+    }
+    .col-type {
+        display: inline-block; grid-column: 2; grid-row: 2;
+        margin-left: 45px; /* Offset manually or use flex in JS */
+    }
+    /* Let's rely on the JS update below to render a cleaner structure for mobile if possible, 
+       but for now let's use a trick: Force them to block flow? No.
+       
+       Let's use Flex on the history-item container? No, Grid is better.
+       
+       Let's hide standard columns and show a "mobile-details" div injected by JS?
+       Or, just make Cred/Type/Grade visible.
+    */
+    
+    /* REVISED MOBILE GRID FOR CURRENT HTML STRUCTURE */
+    .col-type { display: none; } /* Hide Type on mobile to save space if needed, or show small */
+    
+    .col-cred {
+        display: flex; grid-column: 2; grid-row: 2;
+        font-size: 0.8rem; align-items: center;
+        color: var(--text-muted);
+    }
+    .col-cred::after { content: " • "; margin: 0 5px; }
+    
+    .col-grade {
+        display: flex; grid-column: 2; grid-row: 2;
+        font-size: 0.9rem; font-weight: 800;
+        margin-left: 60px; /* Adjust based on credit width */
+    }
+
+    /* 5. Score (Big Number): Row 2, Right */
+    .col-score { 
+        grid-column: 3; grid-row: 2; 
+        text-align: right; font-size: 1.5rem; 
+        justify-content: flex-end;
+    }
 
     /* Controls */
     .controls-row { flex-direction: column; align-items: stretch; }
