@@ -28,6 +28,8 @@
 
     <div id="toast-container"></div>
 
+    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+
     <div id="auth-screen" class="main-container center-content">
         <div class="glass-card auth-card fade-in-up">
             <div class="auth-header">
@@ -136,8 +138,9 @@
 
             <div class="sidebar-footer">
                 <div class="user-mini-profile">
-                    <div class="avatar-box">
-                        <img src="images/DefaultProfilePic.jpg" id="mini-avatar" alt="User">
+                    <div class="avatar-box" id="mini-avatar-box">
+                        <img src="images/DefaultProfilePic.jpg" id="mini-avatar-img" alt="User" class="avatar-img-el">
+                        <i class="fa-solid fa-circle-user avatar-icon-el" id="mini-avatar-icon"></i>
                         <span class="status-dot"></span>
                     </div>
                     <div class="user-info">
@@ -348,6 +351,7 @@
                         <span class="selection-count">Đã chọn: <b id="sel-count">0</b></span>
                         <div class="selection-buttons">
                             <button class="btn btn-sm btn-action-high-contrast" id="btn-create-folder"><i class="fa-regular fa-folder"></i> Tạo Folder</button>
+                            <button class="btn btn-sm btn-action-high-contrast" id="btn-export-multi-folder" title="Export Selected"><i class="fa-solid fa-share-from-square"></i> Export</button>
                             <button class="btn btn-sm btn-danger-high-contrast" id="btn-delete-multi"><i class="fa-solid fa-trash"></i> Xóa</button>
                             <button class="btn btn-sm btn-outline-high-contrast" id="btn-cancel-sel">Hủy</button>
                         </div>
@@ -381,9 +385,11 @@
                     <div class="glass-card settings-card">
                         <h3 data-i18n="personalInfo">Thông tin cá nhân</h3>
                         <div class="profile-edit-area">
-                            <div class="avatar-upload-wrapper">
-                                <img src="images/DefaultProfilePic.jpg" id="settings-avatar" alt="Avatar">
-                                <label for="avatar-input" class="edit-btn" title="Đổi ảnh"><i class="fa-solid fa-pen"></i></label>
+                            <div class="avatar-upload-wrapper" id="settings-avatar-wrapper">
+                                <img src="images/DefaultProfilePic.jpg" id="settings-avatar" alt="Avatar" class="avatar-img-el">
+                                <i class="fa-solid fa-circle-user avatar-icon-el" id="settings-avatar-icon"></i>
+                                
+                                <label for="avatar-input" class="edit-btn" id="btn-edit-avatar" title="Đổi ảnh"><i class="fa-solid fa-pen"></i></label>
                                 <input type="file" id="avatar-input" accept="image/png, image/jpeg, image/gif, image/webp" hidden>
                             </div>
                             <div class="profile-inputs">
@@ -459,6 +465,20 @@
                                 <button class="lang-btn active" data-lang="vi">🇻🇳 VN</button>
                                 <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card settings-card">
+                        <h3 data-i18n="backupTitle">Sao lưu dữ liệu</h3>
+                        <p class="desc-text" style="margin-bottom: 15px;" data-i18n="backupDesc">Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.</p>
+                        
+                        <div class="backup-actions" style="display: flex; gap: 15px;">
+                            <button class="btn btn-outline full-width" id="btn-export-data">
+                                <i class="fa-solid fa-file-export"></i> <span data-i18n="btnExport">Xuất (Export)</span>
+                            </button>
+                            <button class="btn btn-outline full-width" id="btn-import-data">
+                                <i class="fa-solid fa-file-import"></i> <span data-i18n="btnImport">Nhập (Import)</span>
+                            </button>
                         </div>
                     </div>
 

@@ -409,6 +409,23 @@ body {
 .input-wrapper.tight label { left: 10px; top: 10px; }
 .btn-text-action { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary); font-weight: 700; font-size: 0.8rem; cursor: pointer; }
 
+/* NEW: Guest Avatar Icon Style */
+.avatar-icon-el {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px; /* Big icon for settings */
+    color: var(--text-muted);
+    background: var(--input-bg);
+    border-radius: 50%;
+}
+#mini-avatar-icon.avatar-icon-el {
+    font-size: 40px; /* Smaller for sidebar */
+}
+
+/* Helper to hide edit button */
+.hidden-important { display: none !important; }
+
+
 /* Setting Rows */
 .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
 .setting-row.stacked { flex-direction: column; align-items: flex-start; gap: 10px; }

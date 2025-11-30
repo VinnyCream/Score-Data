@@ -1,6 +1,6 @@
 /**
  * SCOREMASTER PRO - CORE JAVASCRIPT
- * Version: 4.6.0 (Mobile Menu Icon Update)
+ * Version: 5.0.0 (Data Export/Import Update)
  * Architecture: Modular Object Literal Pattern
  */
 
@@ -8,7 +8,7 @@
 // 1. DEV CONTROL & CONFIG
 // ==========================================
 const CONFIG = {
-    APP_VERSION: '4.6.0 Pro',
+    APP_VERSION: '5.0.0 Pro',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, // 5 minutes
@@ -139,6 +139,11 @@ const LANG = {
         gradeC: "Khá/TB",
         gradeD: "Yếu",
         gradeF: "Kém",
+        // New Backup Keys
+        backupTitle: "Sao lưu dữ liệu",
+        backupDesc: "Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.",
+        btnExport: "Xuất (Export)",
+        btnImport: "Nhập (Import)",
         
         // Notifications
         errorEmpty: "Vui lòng điền đầy đủ thông tin!",
@@ -150,7 +155,10 @@ const LANG = {
         errorFile: "File quá lớn (>21MB).",
         errorPass: "Mật khẩu cũ không đúng.",
         confirmDelete: "Bạn có chắc chắn muốn xóa tài khoản này? Dữ liệu sẽ mất vĩnh viễn.",
-        settingUpdated: "Đã cập nhật cài đặt!"
+        settingUpdated: "Đã cập nhật cài đặt!",
+        importSuccess: "Dữ liệu đã được nhập thành công!",
+        importError: "Lỗi file không hợp lệ!",
+        exportSuccess: "Đã xuất file dữ liệu!"
     },
     en: {
         welcomeTitle: "ScoreMaster",
@@ -214,6 +222,11 @@ const LANG = {
         gradeC: "Average",
         gradeD: "Poor",
         gradeF: "Fail",
+        // New Backup Keys
+        backupTitle: "Data Backup",
+        backupDesc: "Export data to move to a new device or import saved data.",
+        btnExport: "Export",
+        btnImport: "Import",
 
         // Notifications
         errorEmpty: "Please fill all fields!",
@@ -225,7 +238,10 @@ const LANG = {
         errorFile: "File too big (>21MB).",
         errorPass: "Incorrect old password.",
         confirmDelete: "Are you sure? This cannot be undone.",
-        settingUpdated: "Settings updated!"
+        settingUpdated: "Settings updated!",
+        importSuccess: "Data imported successfully!",
+        importError: "Invalid file format!",
+        exportSuccess: "Data exported!"
     }
 };
 
@@ -284,7 +300,91 @@ const Storage = {
 };
 
 // ==========================================
-// 4. AUTHENTICATION SYSTEM
+// 4. DATA MANAGER (IMPORT/EXPORT)
+// ==========================================
+const DataManager = {
+    exportData: (dataToExport, filename = 'score_data.json') => {
+        try {
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            UI.toast('success', 'exportSuccess');
+        } catch (e) {
+            console.error(e);
+            UI.toast('error', 'Error exporting data');
+        }
+    },
+
+    importData: (file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                DataManager.processImport(importedData);
+            } catch (err) {
+                console.error(err);
+                UI.toast('error', 'importError');
+            }
+        };
+        reader.readAsText(file);
+    },
+
+    processImport: (data) => {
+        if (!data || !Array.isArray(data.history)) {
+            return UI.toast('error', 'importError');
+        }
+
+        const currentUser = App.currentUser;
+        let addedCount = 0;
+
+        // 1. Merge History (Avoid duplicates by ID)
+        data.history.forEach(newItem => {
+            const exists = currentUser.history.some(existing => existing.id === newItem.id);
+            if (!exists) {
+                currentUser.history.push(newItem);
+                addedCount++;
+            }
+        });
+
+        // 2. Merge Folders
+        if (data.folders && Array.isArray(data.folders)) {
+            if (!currentUser.folders) currentUser.folders = [];
+            data.folders.forEach(newFolder => {
+                // If folder ID exists, we might want to rename it or merge items. 
+                // Simple strategy: If ID exists, generate new ID. If not, add it.
+                let folderId = newFolder.id;
+                const exists = currentUser.folders.find(f => f.id === folderId);
+                
+                if (exists) {
+                    // Generate new ID to avoid conflict, append (Imported) to name
+                    folderId = 'folder_' + Date.now() + Math.random().toString(36).substr(2, 5);
+                    newFolder.id = folderId;
+                    newFolder.name = newFolder.name + ' (Imported)';
+                }
+                currentUser.folders.push(newFolder);
+            });
+        }
+
+        // Sort history by date desc
+        currentUser.history.sort((a, b) => b.date - a.date);
+
+        Storage.updateCurrentUser(currentUser);
+        App.syncUI();
+        UI.toast('success', 'importSuccess');
+    }
+};
+
+// ==========================================
+// 5. AUTHENTICATION SYSTEM
 // ==========================================
 const Auth = {
     currentUser: null,
@@ -379,7 +479,7 @@ const Auth = {
 };
 
 // ==========================================
-// 5. CALCULATOR LOGIC
+// 6. CALCULATOR LOGIC
 // ==========================================
 const Calculator = {
     calculateSubjectScore: (inputs, type) => {
@@ -437,7 +537,7 @@ const Calculator = {
 };
 
 // ==========================================
-// 6. UI MANAGER & CHARTS
+// 7. UI MANAGER & CHARTS
 // ==========================================
 const UI = {
     chartInstances: {},
@@ -710,7 +810,7 @@ const UI = {
 };
 
 // ==========================================
-// 7. MAIN CONTROLLER
+// 8. MAIN CONTROLLER
 // ==========================================
 const App = {
     currentUser: null,
@@ -733,13 +833,42 @@ const App = {
         UI.renderInputs('5:5');
 
         document.getElementById('current-date').innerText = new Date().toLocaleDateString(user.settings.lang === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        
+        // --- NEW: GUEST AVATAR LOGIC ---
+        const isGuest = user.id === 'guest';
+        
+        const imgs = document.querySelectorAll('.avatar-img-el');
+        const icons = document.querySelectorAll('.avatar-icon-el');
+        const editBtn = document.getElementById('btn-edit-avatar');
+
+        if (isGuest) {
+            // Hide Image, Show Icon
+            imgs.forEach(el => el.style.display = 'none');
+            icons.forEach(el => el.style.display = 'flex');
+            // Hide Edit Button
+            if(editBtn) editBtn.classList.add('hidden-important');
+        } else {
+            // Show Image, Hide Icon
+            imgs.forEach(el => {
+                el.style.display = 'block';
+                el.src = user.avatar;
+            });
+            icons.forEach(el => el.style.display = 'none');
+            // Show Edit Button
+            if(editBtn) editBtn.classList.remove('hidden-important');
+        }
     },
 
     syncUI: () => {
         const u = App.currentUser;
+        const isGuest = u.id === 'guest';
         
-        document.getElementById('mini-avatar').src = u.avatar;
-        document.getElementById('settings-avatar').src = u.avatar;
+        // Only update image src if not guest (guest uses icon)
+        if(!isGuest) {
+            document.getElementById('mini-avatar-img').src = u.avatar;
+            document.getElementById('settings-avatar').src = u.avatar;
+        }
+
         document.getElementById('mini-nickname').innerText = u.nickname;
         document.getElementById('mini-username').innerText = '@' + u.username;
         document.getElementById('set-username').value = u.username;
@@ -837,13 +966,17 @@ const App = {
             Storage.updateCurrentUser(App.currentUser);
             App.syncUI();
             UI.toast('success', 'successSave');
+            
+            // Re-run LoadUser logic to ensure avatar is displayed (if switching from broken state)
+            const imgs = document.querySelectorAll('.avatar-img-el');
+            imgs.forEach(el => el.src = base64Data);
         } catch (e) {
             console.error(e);
             UI.toast('error', 'Ảnh quá lớn so với bộ nhớ trình duyệt!');
         }
     },
 
-    // --- FOLDER LOGIC ---
+    // --- FOLDER LOGIC (UPDATED WITH EXPORT) ---
     renderFolders: () => {
         const container = document.getElementById('folder-container');
         container.innerHTML = '';
@@ -868,6 +1001,7 @@ const App = {
             div.className = `folder-card ${currentSource === f.id ? 'active' : ''}`;
             const validItems = f.items.filter(id => App.currentUser.history.find(h => h.id === id));
             
+            // ADDED: Export Button to folder actions
             div.innerHTML = `
                 <div class="folder-icon"><i class="fa-regular fa-folder"></i></div>
                 <div class="folder-name" title="${f.name}">${f.name}</div>
@@ -876,6 +1010,7 @@ const App = {
                 
                 <div class="folder-actions">
                     <button class="btn-folder-act" onclick="App.renameFolder('${f.id}')" title="Đổi tên"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-folder-act" onclick="App.exportFolder('${f.id}')" title="Export Folder"><i class="fa-solid fa-share-from-square"></i></button>
                     <button class="btn-folder-act" onclick="App.setDashboardSource('${f.id}')" title="Ghim lên Dashboard"><i class="fa-solid fa-thumbtack"></i></button>
                     <button class="btn-folder-act" style="color:red" onclick="App.deleteFolder('${f.id}')" title="Xóa Folder"><i class="fa-solid fa-xmark"></i></button>
                 </div>
@@ -888,6 +1023,24 @@ const App = {
             };
             container.appendChild(div);
         });
+    },
+    
+    // NEW: Export Single Folder
+    exportFolder: (folderId) => {
+        const folder = App.currentUser.folders.find(f => f.id === folderId);
+        if (!folder) return;
+        
+        // Get all history items that belong to this folder
+        const items = App.currentUser.history.filter(h => folder.items.includes(h.id));
+        
+        const exportObj = {
+            folders: [folder],
+            history: items,
+            exportDate: new Date().toISOString()
+        };
+        
+        const filename = `SM_Folder_${folder.name.replace(/\s+/g, '_')}.json`;
+        DataManager.exportData(exportObj, filename);
     },
 
     createFolder: () => {
@@ -999,6 +1152,19 @@ const App = {
         App.syncUI();
     },
 
+    // NEW: Export Multiple Selected Items (as a dynamic folder structure)
+    exportMulti: () => {
+        const items = App.currentUser.history.filter(h => App.selectedItems.has(h.id));
+        const exportObj = {
+            folders: [],
+            history: items,
+            exportDate: new Date().toISOString()
+        };
+        const filename = `SM_Selected_${items.length}_Items.json`;
+        DataManager.exportData(exportObj, filename);
+        App.cancelSelection();
+    },
+
     // --- EVENT BINDING ---
     initEvents: () => {
         document.getElementById('btn-login').onclick = () => Auth.login(document.getElementById('login-username').value, document.getElementById('login-password').value);
@@ -1019,7 +1185,6 @@ const App = {
             };
         });
 
-        // NÂNG CẤP: Nút mở Menu Mobile
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         if(mobileMenuBtn) {
             mobileMenuBtn.onclick = () => {
@@ -1084,6 +1249,30 @@ const App = {
         document.getElementById('btn-create-folder').onclick = App.createFolder;
         document.getElementById('btn-delete-multi').onclick = App.deleteMulti;
         document.getElementById('btn-cancel-sel').onclick = App.cancelSelection;
+        // Bind Export Selected
+        const btnExportMulti = document.getElementById('btn-export-multi-folder');
+        if(btnExportMulti) btnExportMulti.onclick = App.exportMulti;
+
+        // --- NEW: BACKUP BUTTON EVENTS ---
+        document.getElementById('btn-export-data').onclick = () => {
+             // Export Full Data
+             const exportObj = {
+                 folders: App.currentUser.folders,
+                 history: App.currentUser.history,
+                 exportDate: new Date().toISOString()
+             };
+             DataManager.exportData(exportObj, `ScoreData_Backup_${Date.now()}.json`);
+        };
+
+        document.getElementById('btn-import-data').onclick = () => {
+            document.getElementById('import-file-input').click();
+        };
+
+        document.getElementById('import-file-input').onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) DataManager.importData(file);
+            e.target.value = ''; // Reset
+        };
 
         document.getElementById('btn-change-username').onclick = () => {
             const newName = prompt(LANG[App.currentUser.settings.lang].accountName + ":");
