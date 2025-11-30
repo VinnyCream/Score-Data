@@ -920,30 +920,41 @@ input:checked + .slider:before { transform: translateX(22px); }
     left: 12px !important;
 }
 
-/* --- 3. Sửa lỗi Text điểm lệch trong vòng tròn (Mobile) --- */
+/* --- 3. Sửa lỗi Text điểm lệch trong vòng tròn (Mobile) - FIX FINAL --- */
 @media (max-width: 768px) {
-    /* Ép khung bao khớp với kích thước SVG (120px) */
+    /* 1. Thiết lập khung bao trùng khít với vòng tròn 120px */
     .score-circle-wrapper { 
         width: 120px !important; 
         height: 120px !important; 
         margin: 0 auto 20px auto;
-        display: flex;       /* Dùng Flexbox để căn giữa tuyệt đối */
-        align-items: center;
-        justify-content: center;
+        position: relative !important; /* Làm mốc tọa độ */
+        display: block !important;     /* Tắt Flexbox gây lệch */
     }
     
-    /* Chỉnh lại kích thước chữ cho vừa khung 120px */
+    /* 2. Căn giữa số điểm tuyệt đối theo toán học */
     .score-circle-wrapper span { 
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important; /* Dịch ngược lại 50% để vào tâm */
+        margin: 0 !important;
         font-size: 2.2rem !important; 
-        position: static; /* Reset absolute cũ */
-        transform: none;
-        line-height: 1;
-        margin-top: 5px; /* Tinh chỉnh nhỏ để text nằm chính giữa mắt nhìn */
+        line-height: 1 !important;
+        width: 100%;
+        text-align: center;
+        z-index: 5; /* Đảm bảo số nổi lên trên vòng tròn */
     }
     
-    /* Đảm bảo bảng kết quả không bị dính sát mép màn hình */
+    /* 3. Đảm bảo vòng tròn SVG nằm đúng vị trí nền */
+    .score-circle-wrapper svg {
+        display: block;
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    /* Tinh chỉnh lại khung kết quả cho gọn */
     .result-modal-inner {
-        width: 90%;       /* Thu gọn width chút xíu */
+        width: 90%;
         max-width: 340px;
     }
 }
