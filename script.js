@@ -1,7 +1,7 @@
 /**
  * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC)
- * Version: 7.2.0 (Search & Persistence)
- * Fixes: LocalStorage for persistent login, Admin Search
+ * Version: 7.3.0 (UI Fixes & Input Limits)
+ * Fixes: Input 0-10 limit, Mobile Dark Mode Contrast
  */
 
 // ==================================================================
@@ -15,7 +15,7 @@ const SUPABASE_KEY = 'sb_publishable_F2EW-fWUGN5z7zw02BlTEw_iSfU7ohe';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CONFIG = {
-    APP_VERSION: '7.2.0 Cloud',
+    APP_VERSION: '7.3.0 Cloud',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, 
@@ -460,7 +460,8 @@ const UI = {
         labels[type].forEach(label => {
             const div = document.createElement('div');
             div.className = 'input-wrapper';
-            div.innerHTML = `<input type="number" class="calc-input" step="0.1" min="0" max="10" placeholder=" "><label>${label}</label>`;
+            // UPDATED: Added oninput to enforce 0-10 range in real-time
+            div.innerHTML = `<input type="number" class="calc-input" step="0.1" min="0" max="10" placeholder=" " oninput="if(this.value>10)this.value=10;if(this.value<0)this.value=0;"><label>${label}</label>`;
             container.appendChild(div);
         });
     },
