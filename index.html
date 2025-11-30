@@ -249,7 +249,7 @@
                 </div>
             </section>
 
-            <section id="calculator" class="page-section fade-in">
+<section id="calculator" class="page-section fade-in">
                 <h2 class="page-title" data-i18n="navCalculator">Công cụ tính điểm</h2>
                 <div class="calc-wrapper">
                     <div class="glass-card form-container">
@@ -291,38 +291,43 @@
                         </div>
                     </div>
 
-                    <div id="calc-result" class="result-card hidden">
-                        <div class="result-header">
-                            <span data-i18n="resultTitle">KẾT QUẢ MÔN HỌC</span>
-                            <button class="btn-close" onclick="UI.hideResult()"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        <div class="result-body">
-                            <div class="score-circle-wrapper">
-                                <svg class="progress-ring" width="120" height="120">
-                                    <circle class="progress-ring__circle-bg" stroke="#eee" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                                    <circle class="progress-ring__circle" stroke="var(--primary)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                                </svg>
-                                <span id="res-score-number">0.0</span>
+                    <div id="calc-result" class="result-wrapper hidden">
+                        <div class="result-overlay-bg" onclick="UI.hideResult()"></div> <div class="result-modal-inner glass-card">
+                            <button class="btn-close-floating" onclick="UI.hideResult()"><i class="fa-solid fa-xmark"></i></button>
+                            
+                            <div class="result-header">
+                                <span data-i18n="resultTitle">KẾT QUẢ MÔN HỌC</span>
                             </div>
                             
-                            <div class="score-details">
-                                <h3 id="res-grade-text" class="text-grade">Điểm A</h3>
-                                <div class="score-breakdown">
-                                    <div class="score-item">
-                                        <span class="label">Thang 10</span>
-                                        <span class="value" id="res-score-10">0.0</span>
-                                    </div>
-                                    <div class="vertical-sep"></div>
-                                    <div class="score-item">
-                                        <span class="label">Thang 4</span>
-                                        <span class="value" id="res-score-4">0.0</span>
-                                    </div>
+                            <div class="result-body">
+                                <div class="score-circle-wrapper">
+                                    <svg class="progress-ring" width="120" height="120">
+                                        <circle class="progress-ring__circle-bg" stroke="#eee" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                        <circle class="progress-ring__circle" stroke="var(--primary)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                    </svg>
+                                    <span id="res-score-number">0.0</span>
                                 </div>
-                                <p id="res-status-text" class="status-badge pass">QUA MÔN</p>
+                                
+                                <div class="score-details">
+                                    <h3 id="res-grade-text" class="text-grade">Điểm A</h3>
+                                    <div class="score-breakdown">
+                                        <div class="score-item">
+                                            <span class="label">Thang 10</span>
+                                            <span class="value" id="res-score-10">0.0</span>
+                                        </div>
+                                        <div class="vertical-sep"></div>
+                                        <div class="score-item">
+                                            <span class="label">Thang 4</span>
+                                            <span class="value" id="res-score-4">0.0</span>
+                                        </div>
+                                    </div>
+                                    <p id="res-status-text" class="status-badge pass">QUA MÔN</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="result-footer">
-                            <p data-i18n="autoSaveNote" id="autosave-note"><i class="fa-solid fa-check"></i> Kết quả đã được tự động lưu.</p>
+                            
+                            <div class="result-footer">
+                                <p data-i18n="autoSaveNote" id="autosave-note"><i class="fa-solid fa-check"></i> Kết quả đã được tự động lưu.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

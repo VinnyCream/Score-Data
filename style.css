@@ -718,3 +718,161 @@ input:checked + .slider:before { transform: translateX(22px); }
 @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
 .fade-in-up { animation: fade-in-up 0.5s ease-out; }
 .hidden { display: none !important; }
+
+/* --- 5. CALCULATOR & INPUT BALANCING --- */
+
+/* Cân bằng khoảng cách Layout Desktop */
+.calc-wrapper { 
+    display: grid; 
+    grid-template-columns: 1.8fr 1.2fr; /* Điều chỉnh tỉ lệ cân đối hơn */
+    gap: 30px; /* Tăng khoảng cách giữa Form và Kết quả để thoáng hơn */
+    align-items: start; 
+}
+
+/* Tăng khoảng cách bên trong Form để chữ không bị dính sát lề */
+.form-container {
+    padding: 2rem; /* Tăng padding */
+}
+
+/* Cân bằng lại các Input */
+.inputs-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Input rộng hơn xíu */
+    gap: 20px; /* Khoảng cách input xa hơn */
+    margin: 25px 0; 
+}
+
+.input-wrapper input, .input-wrapper select {
+    padding: 16px 16px 16px 45px; /* Tăng padding bên trong input */
+    font-size: 1.05rem; /* Chữ to hơn 1 chút cho dễ nhìn */
+}
+
+/* --- RESULT CARD STYLING (DESKTOP DEFAULT) --- */
+.result-wrapper {
+    position: sticky; 
+    top: 20px; 
+    z-index: 10;
+}
+
+/* Style cho cái bảng kết quả (inner card) */
+.result-modal-inner {
+    border: 2px solid var(--primary);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+/* Nút đóng nổi (Desktop ẩn đi hoặc hiển thị nhỏ) */
+.btn-close-floating {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.05);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    transition: 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-close-floating:hover { background: var(--danger); color: white; }
+
+.result-overlay-bg { display: none; } /* Desktop không cần nền tối */
+
+/* Animation ẩn hiện */
+.hidden { display: none !important; }
+
+
+/* --- MOBILE & TABLET RESPONSIVE OVERRIDES --- */
+
+/* TABLET (giữ grid nhưng thu gọn) */
+@media (max-width: 1024px) {
+    .calc-wrapper { grid-template-columns: 1fr; gap: 30px; }
+    .result-wrapper { position: static; margin-top: 0; }
+}
+
+/* MOBILE SPECIFIC - OVERLAY MODE */
+@media (max-width: 768px) {
+    
+    /* 1. Form Inputs thoáng hơn trên mobile */
+    .form-container { padding: 1.5rem; }
+    .inputs-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    /* 2. CHẾ ĐỘ OVERLAY CHO BẢNG KẾT QUẢ */
+    .result-wrapper {
+        position: fixed; /* Trùm toàn màn hình */
+        inset: 0; /* top:0, left:0, right:0, bottom:0 */
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: fadeIn 0.3s forwards;
+    }
+
+    /* Lớp nền mờ Blur */
+    .result-wrapper::before {
+        content: "";
+        position: absolute; inset: 0;
+        background: rgba(0, 0, 0, 0.4); /* Màu đen mờ */
+        backdrop-filter: blur(8px); /* Hiệu ứng làm mờ background phía sau */
+        -webkit-backdrop-filter: blur(8px);
+        z-index: -1;
+    }
+
+    /* Vùng click để đóng (trong suốt phủ toàn bộ) */
+    .result-overlay-bg {
+        position: absolute; inset: 0;
+        z-index: 0;
+        display: block;
+    }
+
+    /* 3. BẢNG KẾT QUẢ NỔI BẬT Ở GIỮA */
+    .result-modal-inner {
+        width: 100%;
+        max-width: 360px;
+        background: var(--glass-bg); /* Hoặc màu solid nếu muốn rõ hơn: var(--bg-gradient-3) */
+        border: 1px solid rgba(255,255,255,0.3);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        transform: scale(0.8);
+        opacity: 0;
+        animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        z-index: 1; /* Nằm trên lớp overlay */
+        padding: 2rem 1.5rem;
+    }
+    
+    /* Dark mode mobile contrast fix */
+    [data-theme="dark"] .result-modal-inner {
+        background: #1E293B; /* Nền đậm hơn cho dễ đọc trên dark mode */
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Nút X nằm gọn góc phải */
+    .btn-close-floating {
+        top: 10px; right: 10px;
+        width: 36px; height: 36px;
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* Chữ kết quả to rõ hơn trên mobile */
+    .text-grade { font-size: 2.5rem; margin-bottom: 10px; }
+    .score-circle-wrapper { width: 140px; height: 140px; margin-bottom: 20px; }
+    .score-circle-wrapper span { font-size: 2.8rem; }
+}
+
+/* Animation nảy lên */
+@keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+}
