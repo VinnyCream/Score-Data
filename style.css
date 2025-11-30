@@ -504,7 +504,39 @@ input:checked + .slider:before { transform: translateX(22px); }
 .toast { background: var(--glass-bg); backdrop-filter: blur(12px); color: var(--text-main); padding: 14px 24px; border-radius: 12px; border-left: 5px solid; animation: slideInRight 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.15); font-weight: 600; display: flex; align-items: center; gap: 10px; }
 .toast.success { border-color: var(--success); } .toast.error { border-color: var(--danger); } .toast.info { border-color: var(--blue); }
 
-/* --- 9. RESPONSIVE MEDIA QUERIES --- */
+/* --- 9. ADMIN PANEL STYLES (NEW) --- */
+.text-admin {
+    background: linear-gradient(135deg, #EC4899, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.admin-table-header {
+    display: flex; gap: 15px;
+    grid-template-columns: none; /* Override default grid */
+}
+.admin-user-card {
+    display: flex; align-items: center; gap: 15px;
+    padding: 15px; border-bottom: 1px solid var(--glass-border);
+    transition: background 0.2s;
+}
+.admin-user-card:hover { background: rgba(255,255,255,0.2); }
+.admin-user-info { flex: 1; display: flex; align-items: center; gap: 12px; }
+.admin-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--glass-border); }
+.admin-user-details h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.admin-user-details p { font-size: 0.75rem; color: var(--text-muted); }
+.admin-password-box { 
+    width: 150px; font-family: monospace; background: rgba(0,0,0,0.05); 
+    padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; color: var(--text-main);
+}
+.admin-status-box { width: 120px; text-align: center; }
+.admin-actions { width: 100px; display: flex; justify-content: center; gap: 8px; }
+
+.badge-status { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+.badge-active { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+.badge-banned { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.badge-admin { background: rgba(139, 92, 246, 0.2); color: var(--accent); }
+
+/* --- 10. RESPONSIVE MEDIA QUERIES --- */
 
 /* MOBILE HEADER & OVERLAY (Default hidden on desktop) */
 .mobile-header { display: none; }
@@ -648,6 +680,12 @@ input:checked + .slider:before { transform: translateX(22px); }
     .input-wrapper.tight input { padding-right: 10px; text-align: center; }
     .input-wrapper.tight label { left: 50%; transform: translateX(-50%); }
     .btn-text-action { position: relative; right: auto; top: auto; transform: none; margin-top: 5px; display: block; width: 100%; }
+    
+    /* Admin Mobile */
+    .admin-user-card { flex-direction: column; align-items: flex-start; }
+    .admin-password-box { width: 100%; }
+    .admin-status-box { width: 100%; text-align: left; margin: 5px 0; }
+    .admin-actions { width: 100%; justify-content: flex-start; }
 }
 
 /* Animations */

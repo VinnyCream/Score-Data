@@ -130,6 +130,13 @@
                     <span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span> 
                     <span data-i18n="navHistory">Lịch sử</span>
                 </button>
+                
+                <!-- ADMIN PANEL BUTTON (Hidden by default) -->
+                <button class="nav-item hidden-important" id="nav-admin-panel" data-target="admin-panel" style="color: var(--secondary);">
+                    <span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> 
+                    <span>Admin Panel</span>
+                </button>
+
                 <button class="nav-item" data-target="settings">
                     <span class="icon"><i class="fa-solid fa-gear"></i></span> 
                     <span data-i18n="navSettings">Cài đặt</span>
@@ -377,6 +384,47 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- ADMIN PANEL SECTION (NEW) -->
+            <section id="admin-panel" class="page-section fade-in">
+                <div class="section-header">
+                    <div>
+                        <h2 class="page-title text-admin">Admin Panel</h2>
+                        <span class="source-badge" style="background: var(--secondary); color: white;">QUẢN TRỊ VIÊN</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="AdminPanel.openCreateModal()">
+                        <i class="fa-solid fa-user-plus"></i> Tạo tài khoản mới
+                    </button>
+                </div>
+
+                <div class="glass-card full-height">
+                    <div class="history-header">
+                        <h3>Danh sách tài khoản hệ thống</h3>
+                        
+                        <!-- NEW ADMIN SEARCH BAR -->
+                        <div class="search-box">
+                            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="admin-search-user" placeholder="Tìm kiếm Username/ID..." onkeyup="AdminPanel.searchUsers(this.value)">
+                        </div>
+
+                        <button class="btn btn-sm btn-outline" onclick="AdminPanel.loadUsers()">
+                            <i class="fa-solid fa-rotate"></i> Làm mới
+                        </button>
+                    </div>
+
+                    <div class="table-header-row admin-table-header">
+                        <div style="flex: 1">Người dùng</div>
+                        <div style="width: 150px">Password</div>
+                        <div style="width: 120px" class="center-text">Trạng thái</div>
+                        <div style="width: 100px" class="center-text">Hành động</div>
+                    </div>
+
+                    <div id="admin-user-list" class="history-list-container scroll-custom">
+                        <!-- User items will be rendered here -->
+                        <div class="empty-state">Loading users...</div>
+                    </div>
+                </div>
+            </section>
 
             <section id="settings" class="page-section fade-in">
                 <h2 class="page-title" data-i18n="navSettings">Cài đặt tài khoản</h2>
@@ -509,8 +557,9 @@
         </main>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+    <!-- Modal Crop Avatar -->
     <div id="crop-modal" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <h3>Chỉnh sửa ảnh đại diện</h3>
@@ -523,6 +572,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Admin Create User -->
+    <div id="admin-create-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <h3>Tạo tài khoản mới (Admin)</h3>
+            <div class="input-wrapper">
+                <input type="text" id="admin-new-username" placeholder=" ">
+                <label>Username</label>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="admin-new-password" placeholder=" ">
+                <label>Password</label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="document.getElementById('admin-create-modal').classList.add('hidden')">Hủy</button>
+                <button class="btn btn-primary" onclick="AdminPanel.createUser()">Tạo ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="script.js"></script>
 </body>
