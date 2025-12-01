@@ -1,5 +1,5 @@
 /* =========================================
-   SCOREMASTER PRO - RESPONSIVE STYLE V4.7
+   SCOREMASTER PRO - RESPONSIVE STYLE V4.9 (Pagination Added)
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -956,5 +956,79 @@ input:checked + .slider:before { transform: translateX(22px); }
     .result-modal-inner {
         width: 90%;
         max-width: 340px;
+    }
+}
+
+/* =========================================
+   11. PAGINATION CONTROLS (NEW)
+   ========================================= */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.btn-page {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-page:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+.btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(0,0,0,0.05);
+}
+
+.page-info {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    background: var(--input-bg);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Dark mode adjustment */
+[data-theme="dark"] .btn-page:disabled {
+    background: rgba(255,255,255,0.05);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .pagination-controls {
+        gap: 10px;
+    }
+    .page-info {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        min-width: 80px;
+    }
+    .btn-page {
+        width: 36px;
+        height: 36px;
     }
 }

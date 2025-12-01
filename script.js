@@ -1,7 +1,7 @@
 /**
- * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC)
- * Version: 7.3.0 (UI Fixes & Input Limits)
- * Fixes: Input 0-10 limit, Mobile Dark Mode Contrast
+ * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION)
+ * Version: 4.9 (Performance Update)
+ * Features: Pagination (10 items/page), Admin Pagination, Input Limits
  */
 
 // ==================================================================
@@ -15,16 +15,20 @@ const SUPABASE_KEY = 'sb_publishable_F2EW-fWUGN5z7zw02BlTEw_iSfU7ohe';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CONFIG = {
-    APP_VERSION: '7.3.0 Cloud',
+    APP_VERSION: '4.9 Pagination',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, 
-    MAX_AVATAR_SIZE: 3 * 1024 * 1024, // Giới hạn 3MB để upload nhanh hơn
+    MAX_AVATAR_SIZE: 3 * 1024 * 1024, 
     PASS_SCORE: 4.0,
-    KEY_SESSION: 'sm_cloud_session_id', // Key for LocalStorage
+    KEY_SESSION: 'sm_cloud_session_id', 
     KEY_GUEST: 'sm_guest_data_v4',
     DEFAULT_SCALE: 'HUFLIT',
-    ADMIN_USERNAME: 'Admin' // Tên tài khoản Admin
+    ADMIN_USERNAME: 'Admin',
+    
+    // --- CẤU HÌNH PHÂN TRANG ---
+    ITEMS_PER_PAGE: 10,        // Số môn học mỗi trang
+    ADMIN_ITEMS_PER_PAGE: 10   // Số user admin mỗi trang
 };
 
 // ==================================================================
@@ -79,20 +83,14 @@ const LANG = {
 };
 
 // ==================================================================
-// 3. STORAGE MANAGER (TRÁI TIM CỦA VIỆC ĐỒNG BỘ)
+// 3. STORAGE MANAGER
 // ==================================================================
 const Storage = {
-    // UPDATED: Sử dụng localStorage để giữ trạng thái đăng nhập khi tắt trình duyệt
     setSession: (id) => localStorage.setItem(CONFIG.KEY_SESSION, id),
     getSession: () => localStorage.getItem(CONFIG.KEY_SESSION),
     clearSession: () => localStorage.removeItem(CONFIG.KEY_SESSION),
 
-    /**
-     * HÀM QUAN TRỌNG NHẤT: ĐẨY DỮ LIỆU LÊN SUPABASE
-     * Được gọi mỗi khi có bất kỳ thay đổi nào từ phía người dùng
-     */
     updateCurrentUser: async (user) => {
-        // Nếu là khách -> Lưu vào trình duyệt
         if (user.id === 'guest') {
             sessionStorage.setItem(CONFIG.KEY_GUEST, JSON.stringify(user));
             return;
@@ -117,8 +115,6 @@ const Storage = {
         if (error) {
             console.error("❌ Sync Error:", error);
             UI.toast('error', 'Lỗi đồng bộ dữ liệu!');
-        } else {
-            console.log("✅ Sync Success!");
         }
     },
 
@@ -170,14 +166,12 @@ const DataManager = {
         if (!data || !Array.isArray(data.history)) return UI.toast('error', 'importError');
         const currentUser = App.currentUser;
 
-        // Merge History
         data.history.forEach(newItem => {
             if (!currentUser.history.some(existing => existing.id === newItem.id)) {
                 currentUser.history.push(newItem);
             }
         });
 
-        // Merge Folders
         if (data.folders && Array.isArray(data.folders)) {
             if (!currentUser.folders) currentUser.folders = [];
             data.folders.forEach(newFolder => {
@@ -192,17 +186,14 @@ const DataManager = {
         }
 
         currentUser.history.sort((a, b) => b.date - a.date);
-        
-        // Gọi hàm đồng bộ ngay sau khi import
         Storage.updateCurrentUser(currentUser); 
-        
         App.syncUI();
         UI.toast('success', 'importSuccess');
     }
 };
 
 // ==================================================================
-// 5. AUTHENTICATION (XỬ LÝ ĐĂNG NHẬP/ĐĂNG KÝ)
+// 5. AUTHENTICATION
 // ==================================================================
 const Auth = {
     init: async () => {
@@ -210,7 +201,6 @@ const Auth = {
         
         if (sessionId) {
             UI.showLoading(true);
-            // Lấy FULL dữ liệu từ server
             const { data, error } = await supabase
                 .from('users')
                 .select('*')
@@ -220,7 +210,6 @@ const Auth = {
             UI.showLoading(false);
 
             if (data && !error) {
-                // Check Ban Status on Init
                 if(data.is_banned && data.banned_until) {
                     const banTime = new Date(data.banned_until);
                     if(banTime > new Date()) {
@@ -230,9 +219,8 @@ const Auth = {
                         return;
                     }
                 }
-                App.loadUser(data); // Load user và áp dụng Settings
+                App.loadUser(data);
             } else {
-                // Nếu token không hợp lệ (ví dụ user bị xóa trên server), clear token
                 Storage.clearSession();
                 UI.showAuth();
             }
@@ -249,7 +237,7 @@ const Auth = {
             password: password, 
             nickname: username,
             avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-            settings: { // Default Settings khi tạo mới
+            settings: { 
                 theme: 'light', lang: 'vi', 
                 autoSave: true, 
                 dashboardSource: 'all', gradingScale: CONFIG.DEFAULT_SCALE 
@@ -263,20 +251,14 @@ const Auth = {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
         btn.disabled = true;
 
-        const { data, error } = await supabase
-            .from('users')
-            .insert([newUser])
-            .select();
+        const { data, error } = await supabase.from('users').insert([newUser]).select();
 
         btn.innerHTML = originalText;
         btn.disabled = false;
 
         if (error) {
-            if (error.code === '23505') { 
-                UI.toast('error', 'Tên đăng nhập này đã có người dùng!');
-            } else {
-                UI.toast('error', 'Lỗi đăng ký: ' + error.message);
-            }
+            if (error.code === '23505') UI.toast('error', 'Tên đăng nhập này đã có người dùng!');
+            else UI.toast('error', 'Lỗi đăng ký: ' + error.message);
         } else {
             UI.toast('success', 'successReg');
             UI.switchAuth('login');
@@ -303,13 +285,10 @@ const Auth = {
         if (error || !data) {
             UI.toast('error', 'errorLogin');
         } else {
-            // Check Ban Logic
             if (data.is_banned && data.banned_until) {
                 const banTime = new Date(data.banned_until);
                 const now = new Date();
-                if (banTime > now) {
-                    return UI.toast('error', `Tài khoản bị cấm đến: ${banTime.toLocaleString()}`);
-                }
+                if (banTime > now) return UI.toast('error', `Tài khoản bị cấm đến: ${banTime.toLocaleString()}`);
             }
 
             Storage.setSession(data.id);
@@ -341,17 +320,10 @@ const Auth = {
 
     changePassword: async (oldPass, newPass) => {
         if(App.currentUser.password !== oldPass) return UI.toast('error', 'errorPass');
-        
         App.currentUser.password = newPass;
-        // Chỉ update password field
-        const { error } = await supabase
-            .from('users')
-            .update({ password: newPass })
-            .eq('id', App.currentUser.id);
-
-        if (error) {
-            UI.toast('error', 'Lỗi cập nhật mật khẩu');
-        } else {
+        const { error } = await supabase.from('users').update({ password: newPass }).eq('id', App.currentUser.id);
+        if (error) UI.toast('error', 'Lỗi cập nhật mật khẩu');
+        else {
             UI.toast('success', 'successSave');
             document.getElementById('old-pass').value = '';
             document.getElementById('new-pass').value = '';
@@ -375,7 +347,6 @@ const Calculator = {
         return Math.round(score * 100) / 100;
     },
     getGradingInfo: (score) => {
-        // Lấy gradingScale từ Settings của User hiện tại
         const scale = (App.currentUser?.settings?.gradingScale) || CONFIG.DEFAULT_SCALE;
         const rule = GRADING_RULES[scale] || GRADING_RULES['HUFLIT'];
         return rule.get(score);
@@ -460,15 +431,43 @@ const UI = {
         labels[type].forEach(label => {
             const div = document.createElement('div');
             div.className = 'input-wrapper';
-            // UPDATED: Added oninput to enforce 0-10 range in real-time
             div.innerHTML = `<input type="number" class="calc-input" step="0.1" min="0" max="10" placeholder=" " oninput="if(this.value>10)this.value=10;if(this.value<0)this.value=0;"><label>${label}</label>`;
             container.appendChild(div);
         });
     },
 
-    renderHistory: (history, filter = 'all', dateFilter = null, folderFilterId = null) => {
+    // --- NEW: RENDER PAGINATION HELPER ---
+    renderPagination: (containerId, currPage, totalPages, callback) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (totalPages <= 1) {
+            container.classList.add('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        container.innerHTML = `
+            <button class="btn-page" id="${containerId}-prev" ${currPage === 1 ? 'disabled' : ''}>
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="page-info">${currPage} / ${totalPages}</span>
+            <button class="btn-page" id="${containerId}-next" ${currPage === totalPages ? 'disabled' : ''}>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        `;
+
+        // Bind events
+        document.getElementById(`${containerId}-prev`).onclick = () => { if(currPage > 1) callback(currPage - 1); };
+        document.getElementById(`${containerId}-next`).onclick = () => { if(currPage < totalPages) callback(currPage + 1); };
+    },
+
+    // --- UPDATED: RENDER HISTORY WITH PAGINATION ---
+    renderHistory: (history, filter = 'all', dateFilter = null, folderFilterId = null, isPaginationClick = false) => {
         const container = document.getElementById('history-list');
         container.innerHTML = '';
+        
+        // 1. Filter Logic
         let filtered = history.filter(h => {
             if (filter === 'pass') return h.score >= 4.0;
             if (filter === 'fail') return h.score < 4.0;
@@ -481,13 +480,29 @@ const UI = {
         }
         filtered.sort((a, b) => b.date - a.date);
 
-        if (filtered.length === 0) {
+        // 2. Pagination Logic
+        // Reset to page 1 if filtering changed (not a pagination click)
+        if (!isPaginationClick) App.currentPage = 1;
+        
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / CONFIG.ITEMS_PER_PAGE);
+        
+        // Validate Page
+        if (App.currentPage > totalPages) App.currentPage = totalPages || 1;
+
+        const startIndex = (App.currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
+        const paginatedItems = filtered.slice(startIndex, startIndex + CONFIG.ITEMS_PER_PAGE);
+
+        // 3. Check Empty
+        if (totalItems === 0) {
             const lang = App.currentUser ? App.currentUser.settings.lang : 'vi';
             container.innerHTML = `<div class="empty-state"><img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" alt="Empty" width="60"><p>${LANG[lang].emptyHistory}</p></div>`;
+            UI.renderPagination('history-pagination', 1, 0, () => {}); // Hide pagination
             return;
         }
 
-        filtered.forEach(item => {
+        // 4. Render Items
+        paginatedItems.forEach(item => {
             const dateStr = new Date(item.date).toLocaleDateString();
             const isPass = item.score >= 4.0;
             const gradingInfo = Calculator.getGradingInfo(parseFloat(item.score));
@@ -507,6 +522,19 @@ const UI = {
             `;
             div.onclick = (e) => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') div.querySelector('.item-checkbox').click(); };
             container.appendChild(div);
+        });
+
+        // 5. Render Pagination Controls
+        UI.renderPagination('history-pagination', App.currentPage, totalPages, (newPage) => {
+            App.currentPage = newPage;
+            // Call renderHistory again but with 'isPaginationClick = true' to keep current filters
+            // Note: In a real app, we should read filters from UI state. For simplicity, we just trigger a UI refresh based on DOM state
+            const activeFilter = document.querySelector('.filter-chip.active').dataset.filter;
+            const activeDate = document.getElementById('history-date-filter').value || null;
+            // Assuming folder filter is handled by global state or we re-read. 
+            // Simplified: Re-rendering with known params would require storing them.
+            // A quick hack for this structure: Just re-trigger the current view logic.
+            UI.renderHistory(history, activeFilter, activeDate, folderFilterId, true);
         });
     },
 
@@ -600,10 +628,11 @@ const UI = {
 };
 
 // ==================================================================
-// 7. ADMIN CONTROLLER (NEW)
+// 7. ADMIN CONTROLLER (UPDATED WITH PAGINATION)
 // ==================================================================
 const AdminPanel = {
-    allUsers: [], // Local cache to support search
+    allUsers: [], 
+    currentPage: 1, // New: Track admin page
 
     loadUsers: async () => {
         const container = document.getElementById('admin-user-list');
@@ -616,11 +645,12 @@ const AdminPanel = {
 
         if (error) return UI.toast('error', 'Lỗi tải danh sách users');
 
-        AdminPanel.allUsers = users; // Cache users for search
+        AdminPanel.allUsers = users; 
         AdminPanel.renderUserList(users);
     },
 
     searchUsers: (keyword) => {
+        AdminPanel.currentPage = 1; // Reset to page 1 on search
         const term = keyword.toLowerCase();
         const filtered = AdminPanel.allUsers.filter(user => 
             user.username.toLowerCase().includes(term) || 
@@ -629,16 +659,27 @@ const AdminPanel = {
         AdminPanel.renderUserList(filtered);
     },
 
+    // --- UPDATED: ADMIN RENDER ---
     renderUserList: (users) => {
         const container = document.getElementById('admin-user-list');
         container.innerHTML = '';
 
         if (users.length === 0) {
             container.innerHTML = '<div class="empty-state">No users found.</div>';
+            UI.renderPagination('admin-pagination', 1, 0, () => {});
             return;
         }
 
-        users.forEach(user => {
+        // --- PAGINATION LOGIC ADMIN ---
+        const totalItems = users.length;
+        const totalPages = Math.ceil(totalItems / CONFIG.ADMIN_ITEMS_PER_PAGE);
+        
+        if (AdminPanel.currentPage > totalPages) AdminPanel.currentPage = totalPages || 1;
+
+        const startIndex = (AdminPanel.currentPage - 1) * CONFIG.ADMIN_ITEMS_PER_PAGE;
+        const paginatedUsers = users.slice(startIndex, startIndex + CONFIG.ADMIN_ITEMS_PER_PAGE);
+
+        paginatedUsers.forEach(user => {
             const isAdmin = user.username === CONFIG.ADMIN_USERNAME;
             const isBanned = user.is_banned && new Date(user.banned_until) > new Date();
             
@@ -667,6 +708,12 @@ const AdminPanel = {
                 </div>
             `;
             container.appendChild(div);
+        });
+
+        // Render Pagination Controls
+        UI.renderPagination('admin-pagination', AdminPanel.currentPage, totalPages, (newPage) => {
+            AdminPanel.currentPage = newPage;
+            AdminPanel.renderUserList(users);
         });
     },
 
@@ -755,18 +802,13 @@ const App = {
     currentUser: null,
     selectedItems: new Set(),
     cropper: null,
+    currentPage: 1, // New: Track history page
 
-    // Hàm loadUser có nhiệm vụ điền các giá trị mặc định nếu server trả về NULL
     loadUser: (user) => {
         App.currentUser = user;
-        
-        // --- QUAN TRỌNG: MERGE SETTINGS ĐỂ TRÁNH LỖI MẤT DỮ LIỆU ---
         const defaultSettings = { theme: 'light', lang: 'vi', autoSave: true, gradingScale: CONFIG.DEFAULT_SCALE, dashboardSource: 'all' };
-        
-        // Nếu user.settings bị null hoặc thiếu field, merge với default
         App.currentUser.settings = { ...defaultSettings, ...(user.settings || {}) };
         
-        // Đảm bảo history và folders luôn là mảng
         if(!App.currentUser.history) App.currentUser.history = [];
         if(!App.currentUser.folders) App.currentUser.folders = [];
         if(!App.currentUser.avatar) App.currentUser.avatar = 'images/DefaultProfilePic.jpg';
@@ -774,7 +816,6 @@ const App = {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('app-screen').style.display = 'flex';
 
-        // === ADMIN CHECK ===
         const adminBtn = document.getElementById('nav-admin-panel');
         if (user.username === CONFIG.ADMIN_USERNAME) {
             adminBtn.classList.remove('hidden-important');
@@ -782,7 +823,7 @@ const App = {
             adminBtn.classList.add('hidden-important');
         }
         
-        App.syncUI(); // Hiển thị UI theo dữ liệu tải về
+        App.syncUI();
         
         document.querySelector('.nav-item[data-target="dashboard"]').click();
         UI.renderInputs('5:5');
@@ -790,7 +831,6 @@ const App = {
         const langCode = (App.currentUser.settings.lang === 'vi') ? 'vi-VN' : 'en-US';
         document.getElementById('current-date').innerText = new Date().toLocaleDateString(langCode, { weekday: 'long', month: 'short', day: 'numeric' });
         
-        // Xử lý hiển thị Avatar
         const isGuest = user.id === 'guest';
         const imgs = document.querySelectorAll('.avatar-img-el');
         const icons = document.querySelectorAll('.avatar-icon-el');
@@ -808,8 +848,7 @@ const App = {
             icons.forEach(el => el.style.display = 'none');
             if(editBtn) editBtn.classList.remove('hidden-important');
         }
-        
-        UI.updateText(); // Cập nhật ngôn ngữ ngay khi load
+        UI.updateText();
     },
 
     syncUI: () => {
@@ -823,19 +862,15 @@ const App = {
         document.getElementById('set-username').value = u.username;
         document.getElementById('set-nickname').value = u.nickname;
 
-        // Áp dụng Theme
         document.getElementById('toggle-theme').checked = (u.settings.theme === 'dark');
         document.body.setAttribute('data-theme', u.settings.theme);
         
-        // Áp dụng AutoSave
         document.getElementById('toggle-autosave').checked = u.settings.autoSave;
         const autoSaveRow = document.getElementById('setting-row-autosave');
         if (autoSaveRow) autoSaveRow.style.display = (u.id === 'guest') ? 'none' : 'flex';
 
-        // Áp dụng Grading Scale
         document.getElementById('grading-scale-select').value = u.settings.gradingScale || CONFIG.DEFAULT_SCALE;
 
-        // Active Language Button
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         const activeLangBtn = document.querySelector(`.lang-btn[data-lang="${u.settings.lang}"]`);
         if(activeLangBtn) activeLangBtn.classList.add('active');
@@ -848,13 +883,15 @@ const App = {
                 displayHistory = u.history.filter(h => folder.items.includes(h.id));
                 sourceName = folder.name;
             } else {
-                // Nếu folder bị xóa, reset về all
                 u.settings.dashboardSource = 'all';
                 Storage.updateCurrentUser(u);
             }
         }
         document.getElementById('dashboard-source-label').innerText = `📁 Nguồn: ${sourceName}`;
         UI.updateDashboard(displayHistory);
+        
+        // Reset page to 1 on full Sync
+        App.currentPage = 1;
         UI.renderHistory(u.history);
         App.renderFolders();
     },
@@ -864,7 +901,6 @@ const App = {
         input.type = input.type === 'password' ? 'text' : 'password';
     },
 
-    // --- CROP AVATAR LOGIC ---
     openCropModal: (imageSrc) => {
         const modal = document.getElementById('crop-modal');
         const imgElement = document.getElementById('crop-image');
@@ -881,22 +917,17 @@ const App = {
     saveCrop: () => {
         if (!App.cropper) return;
         const canvas = App.cropper.getCroppedCanvas({ width: 256, height: 256, imageSmoothingQuality: 'high' });
-        // Nén ảnh JPEG 0.7 để giảm dung lượng khi lưu vào DB
         const base64Image = canvas.toDataURL('image/jpeg', 0.7); 
         App.handleSaveAvatar(base64Image);
         App.closeCropModal();
     },
     handleSaveAvatar: async (base64Data) => {
         App.currentUser.avatar = base64Data;
-        
-        // GỌI HÀM UPDATE ĐỂ LƯU NGAY LÊN CLOUD
         await Storage.updateCurrentUser(App.currentUser);
-        
         App.syncUI();
         UI.toast('success', 'successSave');
     },
 
-    // --- FOLDER LOGIC ---
     renderFolders: () => {
         const container = document.getElementById('folder-container');
         container.innerHTML = '';
@@ -927,6 +958,7 @@ const App = {
             `;
             div.onclick = (e) => {
                 if (e.target.closest('.btn-folder-act')) return;
+                // Click on folder to filter history list (without pinning dashboard)
                 UI.renderHistory(App.currentUser.history, 'all', null, f.id);
                 document.querySelectorAll('.folder-card').forEach(c => c.style.opacity = '0.6');
                 div.style.opacity = '1';
@@ -941,11 +973,8 @@ const App = {
         if (!name) return;
         const newFolder = { id: 'folder_' + Date.now(), name: name, items: Array.from(App.selectedItems) };
         App.currentUser.folders.push(newFolder);
-        
         App.cancelSelection();
-        // Sync lên Cloud
         Storage.updateCurrentUser(App.currentUser);
-        
         App.renderFolders();
         UI.toast('success', 'Đã tạo thư mục thành công!');
     },
@@ -977,12 +1006,12 @@ const App = {
         UI.toast('success', 'Đã cập nhật nguồn dữ liệu Dashboard!');
     },
 
-    // --- SELECTION LOGIC ---
     toggleSelection: (id) => {
         if (App.selectedItems.has(id)) App.selectedItems.delete(id); else App.selectedItems.add(id);
         App.updateSelectionUI();
     },
     toggleSelectAll: (checked) => {
+        // Only select items currently visible on the page (UX Standard)
         document.querySelectorAll('.history-item').forEach(row => {
             const id = parseInt(row.getAttribute('data-id'));
             const cb = row.querySelector('.item-checkbox');
@@ -1020,15 +1049,12 @@ const App = {
         App.cancelSelection();
     },
 
-    // --- EVENT BINDING ---
     initEvents: () => {
-        // Auth Buttons
         document.getElementById('btn-login').onclick = () => Auth.login(document.getElementById('login-username').value, document.getElementById('login-password').value);
         document.getElementById('btn-register').onclick = () => Auth.register(document.getElementById('reg-username').value, document.getElementById('reg-password').value);
         document.getElementById('btn-guest').onclick = Auth.loginGuest;
         document.getElementById('btn-logout-mini').onclick = Auth.logout;
 
-        // Navigation
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.onclick = () => {
                 document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -1038,7 +1064,6 @@ const App = {
                 const sidebar = document.querySelector('.sidebar');
                 if (window.innerWidth < 768) sidebar.classList.remove('open');
 
-                // NEW: Load Users if Admin Panel is opened
                 if (btn.dataset.target === 'admin-panel') {
                     AdminPanel.loadUsers();
                 }
@@ -1047,11 +1072,9 @@ const App = {
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         if(mobileMenuBtn) mobileMenuBtn.onclick = () => document.querySelector('.sidebar').classList.add('open');
 
-        // Calculator Inputs
         document.getElementById('weight-select').onchange = (e) => UI.renderInputs(e.target.value);
         document.getElementById('btn-reset-calc').onclick = () => { document.querySelectorAll('.calc-input').forEach(i => i.value = ''); document.getElementById('subject-name').value = ''; UI.hideResult(); };
         
-        // Calculate Logic
         document.getElementById('btn-calc-now').onclick = () => {
             const inputs = Array.from(document.querySelectorAll('.calc-input')).map(i => parseFloat(i.value));
             const weightType = document.getElementById('weight-select').value;
@@ -1079,7 +1102,6 @@ const App = {
             } else { document.getElementById('autosave-note').style.display = 'none'; }
         };
 
-        // History Actions
         document.getElementById('check-all-history').onclick = (e) => App.toggleSelectAll(e.target.checked);
         document.getElementById('btn-create-folder').onclick = App.createFolder;
         document.getElementById('btn-delete-multi').onclick = App.deleteMulti;
@@ -1087,19 +1109,16 @@ const App = {
         const btnExportMulti = document.getElementById('btn-export-multi-folder');
         if(btnExportMulti) btnExportMulti.onclick = App.exportMulti;
 
-        // Data Actions
         document.getElementById('btn-export-data').onclick = () => DataManager.exportData({ folders: App.currentUser.folders, history: App.currentUser.history, exportDate: new Date().toISOString() }, `ScoreData_Backup_${Date.now()}.json`);
         document.getElementById('btn-import-data').onclick = () => document.getElementById('import-file-input').click();
         document.getElementById('import-file-input').onchange = (e) => { const file = e.target.files[0]; if(file) DataManager.importData(file); e.target.value = ''; };
 
-        // Profile Actions
         document.getElementById('btn-change-username').onclick = async () => {
             const newName = prompt("Tên đăng nhập mới:");
             if (!newName) return;
             const now = Date.now();
             if (now - (App.currentUser.lastRenamed || 0) < CONFIG.NAME_CHANGE_COOLDOWN) return UI.toast('error', 'errorCooldown');
             App.currentUser.username = newName; App.currentUser.lastRenamed = now;
-            // Update Username cũng phải sync settings
             const { error } = await supabase.from('users').update({ username: newName, last_renamed: now }).eq('id', App.currentUser.id);
             if(!error) { App.syncUI(); UI.toast('success', 'successSave'); } else UI.toast('error', 'Tên đã tồn tại');
         };
@@ -1115,7 +1134,6 @@ const App = {
             if(oldP && newP) Auth.changePassword(oldP, newP); else UI.toast('error', 'errorEmpty');
         };
 
-        // Avatar Upload
         document.getElementById('avatar-input').onchange = function(e) {
             const file = e.target.files[0]; if (!file) return;
             if (file.size > CONFIG.MAX_AVATAR_SIZE) return UI.toast('error', 'errorFile');
@@ -1124,42 +1142,35 @@ const App = {
             reader.readAsDataURL(file);
         };
 
-        // --- SETTINGS LISTENERS (ĐÃ FIX SYNC) ---
-        
-        // Theme Toggle
         document.getElementById('toggle-theme').onchange = (e) => { 
             App.currentUser.settings.theme = e.target.checked ? 'dark' : 'light'; 
             document.body.setAttribute('data-theme', App.currentUser.settings.theme); 
             UI.updateDashboard(App.currentUser.history); 
-            Storage.updateCurrentUser(App.currentUser); // Sync Immediately
+            Storage.updateCurrentUser(App.currentUser);
         };
         
-        // AutoSave Toggle
         document.getElementById('toggle-autosave').onchange = (e) => { 
             App.currentUser.settings.autoSave = e.target.checked; 
-            Storage.updateCurrentUser(App.currentUser); // Sync Immediately
+            Storage.updateCurrentUser(App.currentUser);
         };
         
-        // Grading Scale Select
         const scaleSelect = document.getElementById('grading-scale-select');
         if (scaleSelect) scaleSelect.onchange = (e) => { 
             App.currentUser.settings.gradingScale = e.target.value; 
             UI.toast('success', 'settingUpdated'); 
-            Storage.updateCurrentUser(App.currentUser); // Sync Immediately
+            Storage.updateCurrentUser(App.currentUser); 
             App.syncUI(); 
         };
 
-        // Language Buttons
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.onclick = () => { 
                 App.currentUser.settings.lang = btn.dataset.lang; 
-                Storage.updateCurrentUser(App.currentUser); // Sync Immediately
+                Storage.updateCurrentUser(App.currentUser);
                 App.syncUI(); 
                 UI.updateText(); 
             };
         });
 
-        // Search & Filters
         document.getElementById('history-search').onkeyup = (e) => {
              const term = e.target.value.toLowerCase();
              const filtered = App.currentUser.history.filter(h => (h.subject && h.subject.toLowerCase().includes(term)) || h.score.toString().includes(term));
@@ -1175,10 +1186,7 @@ const App = {
     saveHistory: (subject, score, credits, type) => {
         const newItem = { id: Date.now(), subject, score, credits, type, date: Date.now() };
         App.currentUser.history.unshift(newItem);
-        
-        // SYNC LÊN SUPABASE
         Storage.updateCurrentUser(App.currentUser);
-        
         App.syncUI();
     },
 
@@ -1186,10 +1194,7 @@ const App = {
         if(confirm("Delete this item?")) {
             App.currentUser.history = App.currentUser.history.filter(h => h.id !== id);
             App.currentUser.folders.forEach(f => { f.items = f.items.filter(itemId => itemId !== id); });
-            
-            // SYNC LÊN SUPABASE
             Storage.updateCurrentUser(App.currentUser);
-            
             App.syncUI();
         }
     }

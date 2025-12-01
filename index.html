@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -131,7 +132,6 @@
                     <span data-i18n="navHistory">Lịch sử</span>
                 </button>
                 
-                <!-- ADMIN PANEL BUTTON (Hidden by default) -->
                 <button class="nav-item hidden-important" id="nav-admin-panel" data-target="admin-panel" style="color: var(--secondary);">
                     <span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> 
                     <span>Admin Panel</span>
@@ -249,7 +249,7 @@
                 </div>
             </section>
 
-<section id="calculator" class="page-section fade-in">
+            <section id="calculator" class="page-section fade-in">
                 <h2 class="page-title" data-i18n="navCalculator">Công cụ tính điểm</h2>
                 <div class="calc-wrapper">
                     <div class="glass-card form-container">
@@ -292,7 +292,8 @@
                     </div>
 
                     <div id="calc-result" class="result-wrapper hidden">
-                        <div class="result-overlay-bg" onclick="UI.hideResult()"></div> <div class="result-modal-inner glass-card">
+                        <div class="result-overlay-bg" onclick="UI.hideResult()"></div> 
+                        <div class="result-modal-inner glass-card">
                             <button class="btn-close-floating" onclick="UI.hideResult()"><i class="fa-solid fa-xmark"></i></button>
                             
                             <div class="result-header">
@@ -387,10 +388,12 @@
                             <p data-i18n="emptyHistory">Chưa có dữ liệu nào</p>
                         </div>
                     </div>
+
+                    <div id="history-pagination" class="pagination-controls hidden">
+                        </div>
                 </div>
             </section>
             
-            <!-- ADMIN PANEL SECTION -->
             <section id="admin-panel" class="page-section fade-in">
                 <div class="section-header">
                     <div>
@@ -406,7 +409,6 @@
                     <div class="history-header">
                         <h3>Danh sách tài khoản hệ thống</h3>
                         
-                        <!-- ADMIN SEARCH BAR -->
                         <div class="search-box">
                             <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                             <input type="text" id="admin-search-user" placeholder="Tìm kiếm Username/ID..." onkeyup="AdminPanel.searchUsers(this.value)">
@@ -425,9 +427,11 @@
                     </div>
 
                     <div id="admin-user-list" class="history-list-container scroll-custom">
-                        <!-- User items will be rendered here -->
                         <div class="empty-state">Loading users...</div>
                     </div>
+
+                    <div id="admin-pagination" class="pagination-controls hidden">
+                        </div>
                 </div>
             </section>
 
@@ -562,9 +566,6 @@
         </main>
     </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
-    <!-- Modal Crop Avatar -->
     <div id="crop-modal" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <h3>Chỉnh sửa ảnh đại diện</h3>
@@ -578,7 +579,6 @@
         </div>
     </div>
 
-    <!-- Modal Admin Create User -->
     <div id="admin-create-modal" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <h3>Tạo tài khoản mới (Admin)</h3>
@@ -598,7 +598,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script src="script.js"></script>
 </body>
 </html>
