@@ -84,6 +84,8 @@ graph TD
 
 
 
+
+
 Score-Data/
 ├── index.html          # Giao diện chính (SPA Structure)
 ├── style.css           # Styling (Variables, Animations, Responsive)
