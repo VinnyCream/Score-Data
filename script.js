@@ -1,7 +1,7 @@
 /**
- * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION)
- * Version: 4.9 (Performance Update)
- * Features: Pagination (10 items/page), Admin Pagination, Input Limits
+ * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION + DONATE)
+ * Version: 5.0 (Donate Feature Added)
+ * Features: Pagination, Admin Panel, Input Limits, Donate System
  */
 
 // ==================================================================
@@ -15,7 +15,7 @@ const SUPABASE_KEY = 'sb_publishable_F2EW-fWUGN5z7zw02BlTEw_iSfU7ohe';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CONFIG = {
-    APP_VERSION: '4.9 Pagination',
+    APP_VERSION: '5.0 Donate',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, 
@@ -73,11 +73,11 @@ const GRADING_RULES = {
 
 const LANG = {
     vi: {
-        welcomeTitle: "ScoreMaster", welcomeSub: "Hệ thống quản lý điểm số sinh viên", loginHeader: "Đăng nhập", usernameLabel: "Tên đăng nhập", passwordLabel: "Mật khẩu", loginBtn: "Đăng nhập", guestBtn: "Tiếp tục với vai trò Khách", orText: "HOẶC", noAccount: "Chưa có tài khoản?", registerLink: "Tạo tài khoản mới", registerHeader: "Tạo tài khoản", regSub: "Tạo tài khoản để lưu trữ dữ liệu lâu dài", createAccountBtn: "Đăng Ký Ngay", haveAccount: "Đã có tài khoản?", loginLink: "Đăng nhập ngay", navDashboard: "Tổng quan", navCalculator: "Tính điểm", navHistory: "Lịch sử", navSettings: "Cài đặt", dashboardTitle: "Bảng điều khiển", totalScoreTitle: "GPA Tích Lũy", statPass: "Qua môn", statFail: "Rớt môn", statCredits: "Tổng Tín Chỉ", chartTitle: "Phân bố điểm số (A - F)", calcSubjectTitle: "Nhập thông tin môn học", subjectNameLabel: "Tên môn học", creditsLabel: "Số tín chỉ", weightLabel: "Tỷ lệ điểm", calcBtn: "Tính kết quả ngay", resultTitle: "KẾT QUẢ MÔN HỌC", autoSaveNote: "✅ Kết quả đã được tự động lưu.", historyTitle: "Lịch sử tính toán", searchPlaceholder: "Tìm kiếm môn học...", filterAll: "Tất cả", filterPass: "Đậu", filterFail: "Rớt", emptyHistory: "Chưa có dữ liệu nào", personalInfo: "Thông tin cá nhân", accountName: "Tên đăng nhập", changeBtn: "Thay đổi", nickname: "Biệt danh (Hiển thị)", saveBtn: "Lưu", appSettings: "Tùy chỉnh ứng dụng", darkMode: "Chế độ Tối (Dark Mode)", autoSave: "Tự động lưu điểm", language: "Ngôn ngữ / Language", gradingScaleTitle: "Quy chế quy đổi điểm (Trường)", gradingScaleDesc: "Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.", changePass: "Bảo mật", oldPass: "Mật khẩu hiện tại", newPass: "Mật khẩu mới", saveChangeBtn: "Cập nhật mật khẩu", accountMgmt: "Vùng nguy hiểm", logoutBtn: "Đăng xuất", deleteAccBtn: "Xóa vĩnh viễn tài khoản", gradeA: "Xuất sắc", gradeB: "Giỏi", gradeC: "Khá/TB", gradeD: "Yếu", gradeF: "Kém", backupTitle: "Sao lưu dữ liệu", backupDesc: "Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.", btnExport: "Xuất (Export)", btnImport: "Nhập (Import)",
+        welcomeTitle: "ScoreMaster", welcomeSub: "Hệ thống quản lý điểm số sinh viên", loginHeader: "Đăng nhập", usernameLabel: "Tên đăng nhập", passwordLabel: "Mật khẩu", loginBtn: "Đăng nhập", guestBtn: "Tiếp tục với vai trò Khách", orText: "HOẶC", noAccount: "Chưa có tài khoản?", registerLink: "Tạo tài khoản mới", registerHeader: "Tạo tài khoản", regSub: "Tạo tài khoản để lưu trữ dữ liệu lâu dài", createAccountBtn: "Đăng Ký Ngay", haveAccount: "Đã có tài khoản?", loginLink: "Đăng nhập ngay", navDashboard: "Tổng quan", navCalculator: "Tính điểm", navHistory: "Lịch sử", navSettings: "Cài đặt", navDonate: "Donate (Ủng hộ)", dashboardTitle: "Bảng điều khiển", totalScoreTitle: "GPA Tích Lũy", statPass: "Qua môn", statFail: "Rớt môn", statCredits: "Tổng Tín Chỉ", chartTitle: "Phân bố điểm số (A - F)", calcSubjectTitle: "Nhập thông tin môn học", subjectNameLabel: "Tên môn học", creditsLabel: "Số tín chỉ", weightLabel: "Tỷ lệ điểm", calcBtn: "Tính kết quả ngay", resultTitle: "KẾT QUẢ MÔN HỌC", autoSaveNote: "✅ Kết quả đã được tự động lưu.", historyTitle: "Lịch sử tính toán", searchPlaceholder: "Tìm kiếm môn học...", filterAll: "Tất cả", filterPass: "Đậu", filterFail: "Rớt", emptyHistory: "Chưa có dữ liệu nào", personalInfo: "Thông tin cá nhân", accountName: "Tên đăng nhập", changeBtn: "Thay đổi", nickname: "Biệt danh (Hiển thị)", saveBtn: "Lưu", appSettings: "Tùy chỉnh ứng dụng", darkMode: "Chế độ Tối (Dark Mode)", autoSave: "Tự động lưu điểm", language: "Ngôn ngữ / Language", gradingScaleTitle: "Quy chế quy đổi điểm (Trường)", gradingScaleDesc: "Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.", changePass: "Bảo mật", oldPass: "Mật khẩu hiện tại", newPass: "Mật khẩu mới", saveChangeBtn: "Cập nhật mật khẩu", accountMgmt: "Vùng nguy hiểm", logoutBtn: "Đăng xuất", deleteAccBtn: "Xóa vĩnh viễn tài khoản", gradeA: "Xuất sắc", gradeB: "Giỏi", gradeC: "Khá/TB", gradeD: "Yếu", gradeF: "Kém", backupTitle: "Sao lưu dữ liệu", backupDesc: "Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.", btnExport: "Xuất (Export)", btnImport: "Nhập (Import)",
         errorEmpty: "Vui lòng điền đầy đủ thông tin!", errorLogin: "Sai tên đăng nhập hoặc mật khẩu!", successLogin: "Đăng nhập thành công!", successReg: "Đăng ký thành công! Hãy đăng nhập.", successSave: "Đã lưu thành công!", errorCooldown: "Vui lòng đợi 5 phút để đổi tên lại.", errorFile: "File quá lớn.", errorPass: "Mật khẩu cũ không đúng.", confirmDelete: "Bạn có chắc chắn muốn xóa tài khoản này? Dữ liệu sẽ mất vĩnh viễn.", settingUpdated: "Đã cập nhật cài đặt!", importSuccess: "Dữ liệu đã được nhập thành công!", importError: "Lỗi file không hợp lệ!", exportSuccess: "Đã xuất file dữ liệu!"
     },
     en: {
-        welcomeTitle: "ScoreMaster", welcomeSub: "Student GPA Management System", loginHeader: "Login", usernameLabel: "Username", passwordLabel: "Password", loginBtn: "Login", guestBtn: "Continue as Guest", orText: "OR", noAccount: "No account?", registerLink: "Create new account", registerHeader: "Create Account", regSub: "Sign up to save your data permanently", createAccountBtn: "Sign Up Now", haveAccount: "Have an account?", loginLink: "Login now", navDashboard: "Dashboard", navCalculator: "Calculator", navHistory: "History", navSettings: "Settings", dashboardTitle: "Dashboard", totalScoreTitle: "Cumulative GPA", statPass: "Passed", statFail: "Failed", statCredits: "Total Credits", chartTitle: "Grade Distribution (A - F)", calcSubjectTitle: "Subject Information", subjectNameLabel: "Subject Name", creditsLabel: "Credits", weightLabel: "Weight Ratio", calcBtn: "Calculate Now", resultTitle: "SUBJECT RESULT", autoSaveNote: "✅ Result automatically saved.", historyTitle: "Calculation History", searchPlaceholder: "Search subjects...", filterAll: "All", filterPass: "Passed", filterFail: "Failed", emptyHistory: "No data available", personalInfo: "Personal Info", accountName: "Username", changeBtn: "Change", nickname: "Nickname (Display)", saveBtn: "Save", appSettings: "App Preferences", darkMode: "Dark Mode", autoSave: "Auto Save Results", language: "Language", gradingScaleTitle: "Grading System (University)", gradingScaleDesc: "Select your university for accurate GPA and grading logic.", changePass: "Security", oldPass: "Current Password", newPass: "New Password", saveChangeBtn: "Update Password", accountMgmt: "Danger Zone", logoutBtn: "Log Out", deleteAccBtn: "Delete Account Permanently", gradeA: "Excellent", gradeB: "Good", gradeC: "Average", gradeD: "Poor", gradeF: "Fail", backupTitle: "Data Backup", backupDesc: "Export data to move to a new device or import saved data.", btnExport: "Export", btnImport: "Import",
+        welcomeTitle: "ScoreMaster", welcomeSub: "Student GPA Management System", loginHeader: "Login", usernameLabel: "Username", passwordLabel: "Password", loginBtn: "Login", guestBtn: "Continue as Guest", orText: "OR", noAccount: "No account?", registerLink: "Create new account", registerHeader: "Create Account", regSub: "Sign up to save your data permanently", createAccountBtn: "Sign Up Now", haveAccount: "Have an account?", loginLink: "Login now", navDashboard: "Dashboard", navCalculator: "Calculator", navHistory: "History", navSettings: "Settings", navDonate: "Donate (Support)", dashboardTitle: "Dashboard", totalScoreTitle: "Cumulative GPA", statPass: "Passed", statFail: "Failed", statCredits: "Total Credits", chartTitle: "Grade Distribution (A - F)", calcSubjectTitle: "Subject Information", subjectNameLabel: "Subject Name", creditsLabel: "Credits", weightLabel: "Weight Ratio", calcBtn: "Calculate Now", resultTitle: "SUBJECT RESULT", autoSaveNote: "✅ Result automatically saved.", historyTitle: "Calculation History", searchPlaceholder: "Search subjects...", filterAll: "All", filterPass: "Passed", filterFail: "Failed", emptyHistory: "No data available", personalInfo: "Personal Info", accountName: "Username", changeBtn: "Change", nickname: "Nickname (Display)", saveBtn: "Save", appSettings: "App Preferences", darkMode: "Dark Mode", autoSave: "Auto Save Results", language: "Language", gradingScaleTitle: "Grading System (University)", gradingScaleDesc: "Select your university for accurate GPA and grading logic.", changePass: "Security", oldPass: "Current Password", newPass: "New Password", saveChangeBtn: "Update Password", accountMgmt: "Danger Zone", logoutBtn: "Log Out", deleteAccBtn: "Delete Account Permanently", gradeA: "Excellent", gradeB: "Good", gradeC: "Average", gradeD: "Poor", gradeF: "Fail", backupTitle: "Data Backup", backupDesc: "Export data to move to a new device or import saved data.", btnExport: "Export", btnImport: "Import",
         errorEmpty: "Please fill all fields!", errorLogin: "Invalid username or password!", successLogin: "Login Successful!", successReg: "Registered! Please login.", successSave: "Saved successfully!", errorCooldown: "Please wait 5 mins to rename.", errorFile: "File too big.", errorPass: "Incorrect old password.", confirmDelete: "Are you sure? This cannot be undone.", settingUpdated: "Settings updated!", importSuccess: "Data imported successfully!", importError: "Invalid file format!", exportSuccess: "Data exported!"
     }
 };
@@ -436,7 +436,6 @@ const UI = {
         });
     },
 
-    // --- NEW: RENDER PAGINATION HELPER ---
     renderPagination: (containerId, currPage, totalPages, callback) => {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -457,17 +456,14 @@ const UI = {
             </button>
         `;
 
-        // Bind events
         document.getElementById(`${containerId}-prev`).onclick = () => { if(currPage > 1) callback(currPage - 1); };
         document.getElementById(`${containerId}-next`).onclick = () => { if(currPage < totalPages) callback(currPage + 1); };
     },
 
-    // --- UPDATED: RENDER HISTORY WITH PAGINATION ---
     renderHistory: (history, filter = 'all', dateFilter = null, folderFilterId = null, isPaginationClick = false) => {
         const container = document.getElementById('history-list');
         container.innerHTML = '';
         
-        // 1. Filter Logic
         let filtered = history.filter(h => {
             if (filter === 'pass') return h.score >= 4.0;
             if (filter === 'fail') return h.score < 4.0;
@@ -480,28 +476,23 @@ const UI = {
         }
         filtered.sort((a, b) => b.date - a.date);
 
-        // 2. Pagination Logic
-        // Reset to page 1 if filtering changed (not a pagination click)
         if (!isPaginationClick) App.currentPage = 1;
         
         const totalItems = filtered.length;
         const totalPages = Math.ceil(totalItems / CONFIG.ITEMS_PER_PAGE);
         
-        // Validate Page
         if (App.currentPage > totalPages) App.currentPage = totalPages || 1;
 
         const startIndex = (App.currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
         const paginatedItems = filtered.slice(startIndex, startIndex + CONFIG.ITEMS_PER_PAGE);
 
-        // 3. Check Empty
         if (totalItems === 0) {
             const lang = App.currentUser ? App.currentUser.settings.lang : 'vi';
             container.innerHTML = `<div class="empty-state"><img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" alt="Empty" width="60"><p>${LANG[lang].emptyHistory}</p></div>`;
-            UI.renderPagination('history-pagination', 1, 0, () => {}); // Hide pagination
+            UI.renderPagination('history-pagination', 1, 0, () => {}); 
             return;
         }
 
-        // 4. Render Items
         paginatedItems.forEach(item => {
             const dateStr = new Date(item.date).toLocaleDateString();
             const isPass = item.score >= 4.0;
@@ -524,16 +515,10 @@ const UI = {
             container.appendChild(div);
         });
 
-        // 5. Render Pagination Controls
         UI.renderPagination('history-pagination', App.currentPage, totalPages, (newPage) => {
             App.currentPage = newPage;
-            // Call renderHistory again but with 'isPaginationClick = true' to keep current filters
-            // Note: In a real app, we should read filters from UI state. For simplicity, we just trigger a UI refresh based on DOM state
             const activeFilter = document.querySelector('.filter-chip.active').dataset.filter;
             const activeDate = document.getElementById('history-date-filter').value || null;
-            // Assuming folder filter is handled by global state or we re-read. 
-            // Simplified: Re-rendering with known params would require storing them.
-            // A quick hack for this structure: Just re-trigger the current view logic.
             UI.renderHistory(history, activeFilter, activeDate, folderFilterId, true);
         });
     },
@@ -628,11 +613,11 @@ const UI = {
 };
 
 // ==================================================================
-// 7. ADMIN CONTROLLER (UPDATED WITH PAGINATION)
+// 7. ADMIN CONTROLLER
 // ==================================================================
 const AdminPanel = {
     allUsers: [], 
-    currentPage: 1, // New: Track admin page
+    currentPage: 1, 
 
     loadUsers: async () => {
         const container = document.getElementById('admin-user-list');
@@ -650,7 +635,7 @@ const AdminPanel = {
     },
 
     searchUsers: (keyword) => {
-        AdminPanel.currentPage = 1; // Reset to page 1 on search
+        AdminPanel.currentPage = 1; 
         const term = keyword.toLowerCase();
         const filtered = AdminPanel.allUsers.filter(user => 
             user.username.toLowerCase().includes(term) || 
@@ -659,7 +644,6 @@ const AdminPanel = {
         AdminPanel.renderUserList(filtered);
     },
 
-    // --- UPDATED: ADMIN RENDER ---
     renderUserList: (users) => {
         const container = document.getElementById('admin-user-list');
         container.innerHTML = '';
@@ -670,7 +654,6 @@ const AdminPanel = {
             return;
         }
 
-        // --- PAGINATION LOGIC ADMIN ---
         const totalItems = users.length;
         const totalPages = Math.ceil(totalItems / CONFIG.ADMIN_ITEMS_PER_PAGE);
         
@@ -710,7 +693,6 @@ const AdminPanel = {
             container.appendChild(div);
         });
 
-        // Render Pagination Controls
         UI.renderPagination('admin-pagination', AdminPanel.currentPage, totalPages, (newPage) => {
             AdminPanel.currentPage = newPage;
             AdminPanel.renderUserList(users);
@@ -796,13 +778,73 @@ const AdminPanel = {
 };
 
 // ==================================================================
-// 8. APP CONTROLLER (CHÍNH)
+// 8. DONATE CONTROLLER (NEW)
+// ==================================================================
+const DonateController = {
+    init: () => {
+        const btnAgri = document.getElementById('btn-switch-agri');
+        const btnMomo = document.getElementById('btn-switch-momo');
+
+        if(btnAgri && btnMomo) {
+            btnAgri.onclick = () => DonateController.switchProvider('agri');
+            btnMomo.onclick = () => DonateController.switchProvider('momo');
+        }
+    },
+
+    switchProvider: (type) => {
+        // Get UI Elements
+        const qrImg = document.getElementById('donate-qr-img');
+        const logoImg = document.getElementById('donate-provider-logo');
+        const nameTxt = document.getElementById('donate-provider-name');
+        const numTxt = document.getElementById('donate-account-num');
+        const btnAgri = document.getElementById('btn-switch-agri');
+        const btnMomo = document.getElementById('btn-switch-momo');
+
+        // Data Definition
+        const data = {
+            agri: {
+                qr: 'Images/agribank_qr.png',
+                logo: 'Images/agribank_logo.png',
+                name: 'Agribank',
+                number: '8888917110015' // STK Agribank
+            },
+            momo: {
+                qr: 'Images/momo_qr.png',
+                logo: 'Images/momo_logo.png',
+                name: 'Momo Wallet',
+                number: '8888917110015' // Số Momo (Nếu khác, bạn hãy thay đổi số này)
+            }
+        };
+
+        const selectedData = data[type];
+
+        // Update UI
+        if(selectedData) {
+            qrImg.src = selectedData.qr;
+            logoImg.src = selectedData.logo;
+            nameTxt.innerText = selectedData.name;
+            numTxt.innerText = selectedData.number;
+        }
+
+        // Toggle Active Class
+        if(type === 'agri') {
+            btnAgri.classList.add('active');
+            btnMomo.classList.remove('active');
+        } else {
+            btnMomo.classList.add('active');
+            btnAgri.classList.remove('active');
+        }
+    }
+};
+
+// ==================================================================
+// 9. APP CONTROLLER (CHÍNH)
 // ==================================================================
 const App = {
     currentUser: null,
     selectedItems: new Set(),
     cropper: null,
-    currentPage: 1, // New: Track history page
+    currentPage: 1, 
 
     loadUser: (user) => {
         App.currentUser = user;
@@ -1203,5 +1245,6 @@ const App = {
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
     App.initEvents();
+    DonateController.init(); // Initialize Donate Logic
     Auth.init();
 });

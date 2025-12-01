@@ -137,6 +137,11 @@
                     <span>Admin Panel</span>
                 </button>
 
+                <button class="nav-item" data-target="donate" style="color: var(--success);">
+                    <span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>
+                    <span data-i18n="navDonate">Donate (Ủng hộ)</span>
+                </button>
+
                 <button class="nav-item" data-target="settings">
                     <span class="icon"><i class="fa-solid fa-gear"></i></span> 
                     <span data-i18n="navSettings">Cài đặt</span>
@@ -432,6 +437,54 @@
 
                     <div id="admin-pagination" class="pagination-controls hidden">
                         </div>
+                </div>
+            </section>
+
+            <section id="donate" class="page-section fade-in">
+                <h2 class="page-title" data-i18n="navDonate">Ủng hộ (Donate)</h2>
+                
+                <div class="glass-card donate-container">
+                    <div class="donate-left-col">
+                        <div class="qr-frame">
+                            <img src="Images/agribank_qr.png" id="donate-qr-img" alt="Mã QR" class="qr-image">
+                        </div>
+                        
+                        <div class="donate-switcher">
+                            <button class="btn-switch active" id="btn-switch-agri">
+                                <img src="Images/agribank_logo.png" alt="Agribank" class="btn-logo-icon">
+                                <span>Agribank</span>
+                            </button>
+                            <button class="btn-switch" id="btn-switch-momo">
+                                <img src="Images/momo_logo.png" alt="Momo" class="btn-logo-icon">
+                                <span>Momo</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="donate-right-col">
+                        <div class="bank-header-display">
+                            <img src="Images/agribank_logo.png" id="donate-provider-logo" alt="Logo" class="provider-logo-lg">
+                            <h3 id="donate-provider-name" class="provider-name-lg">Agribank</h3>
+                        </div>
+
+                        <div class="account-details-box">
+                            <div class="detail-row">
+                                <label>Chủ tài khoản</label>
+                                <div class="info-text highlight-text">NGUYEN HOANG VINH</div>
+                            </div>
+                            <div class="detail-row">
+                                <label>Số tài khoản / Số ví</label>
+                                <div class="info-text highlight-number" id="donate-account-num">8888917110015</div>
+                            </div>
+                        </div>
+
+                        <div class="donate-note-box">
+                            <i class="fa-solid fa-quote-left quote-icon"></i>
+                            <p class="note-text">
+                                Nếu bạn có nhu cầu ủng hộ Project website cá nhân này để mình có động lực cải tiến nhiều tính năng và chức năng hơn thì mình sẽ rất vui biết bao, Cảm ơn bạn đã sử dụng project.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 

@@ -1032,3 +1032,222 @@ input:checked + .slider:before { transform: translateX(22px); }
         height: 36px;
     }
 }
+
+/* =========================================
+   12. DONATE PAGE STYLES (NEW)
+   ========================================= */
+
+/* Container Layout (Split View Desktop) */
+.donate-container {
+    display: flex;
+    gap: 30px;
+    align-items: center; /* Center vertically */
+    padding: 30px;
+    min-height: 400px;
+}
+
+/* Left Column: QR & Switcher */
+.donate-left-col {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-right: 1px solid var(--glass-border);
+    padding-right: 20px;
+}
+
+/* Right Column: Info */
+.donate-right-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* QR Code Styling */
+.qr-frame {
+    background: white; /* QR always needs white background for contrast */
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--glass-border);
+    transition: transform 0.3s ease;
+}
+.qr-frame:hover { transform: scale(1.02); }
+
+.qr-image {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Switcher Buttons */
+.donate-switcher {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border: 2px solid var(--glass-border);
+    background: var(--glass-bg);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.btn-switch:hover {
+    transform: translateY(-2px);
+    color: var(--text-main);
+}
+
+.btn-switch.active {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.1); /* Light green tint */
+    color: var(--success);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.btn-logo-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Right Column Components */
+.bank-header-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.provider-logo-lg {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+    padding: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.provider-name-lg {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Account Details Box */
+.account-details-box {
+    background: var(--input-bg);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-row label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.info-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    word-break: break-all;
+}
+
+.highlight-text {
+    text-transform: uppercase;
+    color: var(--primary);
+}
+
+.highlight-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--success); /* Highlights account number in green */
+    letter-spacing: 1px;
+    font-family: monospace; /* Monospace for easier reading of numbers */
+}
+
+/* Note Caption */
+.donate-note-box {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(236, 72, 153, 0.1); /* Light pink/secondary tint */
+    border-radius: 12px;
+    border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.quote-icon {
+    color: var(--secondary);
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.note-text {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* --- MOBILE RESPONSIVE (Stacking Layout) --- */
+@media (max-width: 768px) {
+    .donate-container {
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .donate-left-col {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+        padding-right: 0;
+        padding-bottom: 25px;
+        margin-bottom: 25px;
+    }
+
+    .donate-right-col {
+        width: 100%;
+        align-items: center;
+    }
+
+    .bank-header-display {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .account-details-box {
+        width: 100%;
+        text-align: center;
+    }
+
+    .highlight-number {
+        font-size: 1.4rem;
+        justify-content: center;
+        display: flex;
+    }
+
+    .donate-note-box {
+        text-align: left; /* Keep note text left aligned or justified for readability */
+    }
+}
