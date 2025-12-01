@@ -1,7 +1,7 @@
 <div align="center">
 
   <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="logo" width="100" height="auto" />
-  <h1>SCORE MASTER PRO 5.0</h1>
+  <h1>SCORE DATA</h1>
   
   <p>
     <b>Hệ thống Quản lý & Tính điểm GPA Sinh viên Toàn diện</b>
@@ -81,7 +81,8 @@ graph TD
     D -->|Manage| G[Admin Panel];
     G -.->|Control| B;
 
-ScoreMaster-Pro/
+
+Score-Data/
 ├── index.html          # Giao diện chính (SPA Structure)
 ├── style.css           # Styling (Variables, Animations, Responsive)
 ├── script.js           # Core Logic, API Calls, UI Handling
