@@ -242,13 +242,28 @@
 
                     <div class="chart-container glass-card large-span">
                         <div class="chart-header">
-                            <h4 data-i18n="chartTitle">Phân bố điểm số (A - F)</h4>
+                            <h4 data-i18n="chartHeaderGeneral">Thống kê & Xu hướng</h4>
                             <select id="chart-filter-year" class="chart-select">
                                 <option value="all">Tất cả thời gian</option>
                             </select>
                         </div>
-                        <div class="chart-box">
-                            <canvas id="scoreDistributionChart"></canvas>
+
+                        <div class="dual-chart-layout">
+                            <div class="chart-col left-chart">
+                                <h5 class="chart-subtitle" data-i18n="chartTrendTitle">Xu hướng GPA (Theo kỳ)</h5>
+                                <div class="chart-box">
+                                    <canvas id="gpaTrendChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="chart-divider"></div>
+
+                            <div class="chart-col right-chart">
+                                <h5 class="chart-subtitle" data-i18n="chartDistTitle">Phân bố điểm (A - F)</h5>
+                                <div class="chart-box">
+                                    <canvas id="scoreDistributionChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

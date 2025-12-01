@@ -1,7 +1,7 @@
 /**
- * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION + DONATE)
- * Version: 5.0 (Donate Feature Added)
- * Features: Pagination, Admin Panel, Input Limits, Donate System
+ * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION + DONATE + DUAL CHART)
+ * Version: 5.1 (Dual Charts Added)
+ * Features: Pagination, Admin Panel, Input Limits, Donate System, GPA Trend Chart
  */
 
 // ==================================================================
@@ -15,7 +15,7 @@ const SUPABASE_KEY = 'sb_publishable_F2EW-fWUGN5z7zw02BlTEw_iSfU7ohe';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CONFIG = {
-    APP_VERSION: '5.0 Donate',
+    APP_VERSION: '5.1 DualChart',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, 
@@ -73,11 +73,11 @@ const GRADING_RULES = {
 
 const LANG = {
     vi: {
-        welcomeTitle: "ScoreMaster", welcomeSub: "Hệ thống quản lý điểm số sinh viên", loginHeader: "Đăng nhập", usernameLabel: "Tên đăng nhập", passwordLabel: "Mật khẩu", loginBtn: "Đăng nhập", guestBtn: "Tiếp tục với vai trò Khách", orText: "HOẶC", noAccount: "Chưa có tài khoản?", registerLink: "Tạo tài khoản mới", registerHeader: "Tạo tài khoản", regSub: "Tạo tài khoản để lưu trữ dữ liệu lâu dài", createAccountBtn: "Đăng Ký Ngay", haveAccount: "Đã có tài khoản?", loginLink: "Đăng nhập ngay", navDashboard: "Tổng quan", navCalculator: "Tính điểm", navHistory: "Lịch sử", navSettings: "Cài đặt", navDonate: "Donate (Ủng hộ)", dashboardTitle: "Bảng điều khiển", totalScoreTitle: "GPA Tích Lũy", statPass: "Qua môn", statFail: "Rớt môn", statCredits: "Tổng Tín Chỉ", chartTitle: "Phân bố điểm số (A - F)", calcSubjectTitle: "Nhập thông tin môn học", subjectNameLabel: "Tên môn học", creditsLabel: "Số tín chỉ", weightLabel: "Tỷ lệ điểm", calcBtn: "Tính kết quả ngay", resultTitle: "KẾT QUẢ MÔN HỌC", autoSaveNote: "✅ Kết quả đã được tự động lưu.", historyTitle: "Lịch sử tính toán", searchPlaceholder: "Tìm kiếm môn học...", filterAll: "Tất cả", filterPass: "Đậu", filterFail: "Rớt", emptyHistory: "Chưa có dữ liệu nào", personalInfo: "Thông tin cá nhân", accountName: "Tên đăng nhập", changeBtn: "Thay đổi", nickname: "Biệt danh (Hiển thị)", saveBtn: "Lưu", appSettings: "Tùy chỉnh ứng dụng", darkMode: "Chế độ Tối (Dark Mode)", autoSave: "Tự động lưu điểm", language: "Ngôn ngữ / Language", gradingScaleTitle: "Quy chế quy đổi điểm (Trường)", gradingScaleDesc: "Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.", changePass: "Bảo mật", oldPass: "Mật khẩu hiện tại", newPass: "Mật khẩu mới", saveChangeBtn: "Cập nhật mật khẩu", accountMgmt: "Vùng nguy hiểm", logoutBtn: "Đăng xuất", deleteAccBtn: "Xóa vĩnh viễn tài khoản", gradeA: "Xuất sắc", gradeB: "Giỏi", gradeC: "Khá/TB", gradeD: "Yếu", gradeF: "Kém", backupTitle: "Sao lưu dữ liệu", backupDesc: "Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.", btnExport: "Xuất (Export)", btnImport: "Nhập (Import)",
+        welcomeTitle: "ScoreMaster", welcomeSub: "Hệ thống quản lý điểm số sinh viên", loginHeader: "Đăng nhập", usernameLabel: "Tên đăng nhập", passwordLabel: "Mật khẩu", loginBtn: "Đăng nhập", guestBtn: "Tiếp tục với vai trò Khách", orText: "HOẶC", noAccount: "Chưa có tài khoản?", registerLink: "Tạo tài khoản mới", registerHeader: "Tạo tài khoản", regSub: "Tạo tài khoản để lưu trữ dữ liệu lâu dài", createAccountBtn: "Đăng Ký Ngay", haveAccount: "Đã có tài khoản?", loginLink: "Đăng nhập ngay", navDashboard: "Tổng quan", navCalculator: "Tính điểm", navHistory: "Lịch sử", navSettings: "Cài đặt", navDonate: "Donate (Ủng hộ)", dashboardTitle: "Bảng điều khiển", totalScoreTitle: "GPA Tích Lũy", statPass: "Qua môn", statFail: "Rớt môn", statCredits: "Tổng Tín Chỉ", chartTitle: "Phân bố điểm số (A - F)", chartHeaderGeneral: "Thống kê & Xu hướng", chartTrendTitle: "Xu hướng GPA (Tích lũy)", chartDistTitle: "Phân bố điểm (A - F)", calcSubjectTitle: "Nhập thông tin môn học", subjectNameLabel: "Tên môn học", creditsLabel: "Số tín chỉ", weightLabel: "Tỷ lệ điểm", calcBtn: "Tính kết quả ngay", resultTitle: "KẾT QUẢ MÔN HỌC", autoSaveNote: "✅ Kết quả đã được tự động lưu.", historyTitle: "Lịch sử tính toán", searchPlaceholder: "Tìm kiếm môn học...", filterAll: "Tất cả", filterPass: "Đậu", filterFail: "Rớt", emptyHistory: "Chưa có dữ liệu nào", personalInfo: "Thông tin cá nhân", accountName: "Tên đăng nhập", changeBtn: "Thay đổi", nickname: "Biệt danh (Hiển thị)", saveBtn: "Lưu", appSettings: "Tùy chỉnh ứng dụng", darkMode: "Chế độ Tối (Dark Mode)", autoSave: "Tự động lưu điểm", language: "Ngôn ngữ / Language", gradingScaleTitle: "Quy chế quy đổi điểm (Trường)", gradingScaleDesc: "Chọn trường của bạn để tính điểm GPA và xếp loại chính xác.", changePass: "Bảo mật", oldPass: "Mật khẩu hiện tại", newPass: "Mật khẩu mới", saveChangeBtn: "Cập nhật mật khẩu", accountMgmt: "Vùng nguy hiểm", logoutBtn: "Đăng xuất", deleteAccBtn: "Xóa vĩnh viễn tài khoản", gradeA: "Xuất sắc", gradeB: "Giỏi", gradeC: "Khá/TB", gradeD: "Yếu", gradeF: "Kém", backupTitle: "Sao lưu dữ liệu", backupDesc: "Xuất dữ liệu để chuyển sang thiết bị mới hoặc nhập dữ liệu đã lưu.", btnExport: "Xuất (Export)", btnImport: "Nhập (Import)",
         errorEmpty: "Vui lòng điền đầy đủ thông tin!", errorLogin: "Sai tên đăng nhập hoặc mật khẩu!", successLogin: "Đăng nhập thành công!", successReg: "Đăng ký thành công! Hãy đăng nhập.", successSave: "Đã lưu thành công!", errorCooldown: "Vui lòng đợi 5 phút để đổi tên lại.", errorFile: "File quá lớn.", errorPass: "Mật khẩu cũ không đúng.", confirmDelete: "Bạn có chắc chắn muốn xóa tài khoản này? Dữ liệu sẽ mất vĩnh viễn.", settingUpdated: "Đã cập nhật cài đặt!", importSuccess: "Dữ liệu đã được nhập thành công!", importError: "Lỗi file không hợp lệ!", exportSuccess: "Đã xuất file dữ liệu!"
     },
     en: {
-        welcomeTitle: "ScoreMaster", welcomeSub: "Student GPA Management System", loginHeader: "Login", usernameLabel: "Username", passwordLabel: "Password", loginBtn: "Login", guestBtn: "Continue as Guest", orText: "OR", noAccount: "No account?", registerLink: "Create new account", registerHeader: "Create Account", regSub: "Sign up to save your data permanently", createAccountBtn: "Sign Up Now", haveAccount: "Have an account?", loginLink: "Login now", navDashboard: "Dashboard", navCalculator: "Calculator", navHistory: "History", navSettings: "Settings", navDonate: "Donate (Support)", dashboardTitle: "Dashboard", totalScoreTitle: "Cumulative GPA", statPass: "Passed", statFail: "Failed", statCredits: "Total Credits", chartTitle: "Grade Distribution (A - F)", calcSubjectTitle: "Subject Information", subjectNameLabel: "Subject Name", creditsLabel: "Credits", weightLabel: "Weight Ratio", calcBtn: "Calculate Now", resultTitle: "SUBJECT RESULT", autoSaveNote: "✅ Result automatically saved.", historyTitle: "Calculation History", searchPlaceholder: "Search subjects...", filterAll: "All", filterPass: "Passed", filterFail: "Failed", emptyHistory: "No data available", personalInfo: "Personal Info", accountName: "Username", changeBtn: "Change", nickname: "Nickname (Display)", saveBtn: "Save", appSettings: "App Preferences", darkMode: "Dark Mode", autoSave: "Auto Save Results", language: "Language", gradingScaleTitle: "Grading System (University)", gradingScaleDesc: "Select your university for accurate GPA and grading logic.", changePass: "Security", oldPass: "Current Password", newPass: "New Password", saveChangeBtn: "Update Password", accountMgmt: "Danger Zone", logoutBtn: "Log Out", deleteAccBtn: "Delete Account Permanently", gradeA: "Excellent", gradeB: "Good", gradeC: "Average", gradeD: "Poor", gradeF: "Fail", backupTitle: "Data Backup", backupDesc: "Export data to move to a new device or import saved data.", btnExport: "Export", btnImport: "Import",
+        welcomeTitle: "ScoreMaster", welcomeSub: "Student GPA Management System", loginHeader: "Login", usernameLabel: "Username", passwordLabel: "Password", loginBtn: "Login", guestBtn: "Continue as Guest", orText: "OR", noAccount: "No account?", registerLink: "Create new account", registerHeader: "Create Account", regSub: "Sign up to save your data permanently", createAccountBtn: "Sign Up Now", haveAccount: "Have an account?", loginLink: "Login now", navDashboard: "Dashboard", navCalculator: "Calculator", navHistory: "History", navSettings: "Settings", navDonate: "Donate (Support)", dashboardTitle: "Dashboard", totalScoreTitle: "Cumulative GPA", statPass: "Passed", statFail: "Failed", statCredits: "Total Credits", chartTitle: "Grade Distribution (A - F)", chartHeaderGeneral: "Statistics & Trends", chartTrendTitle: "GPA Trend (Cumulative)", chartDistTitle: "Grade Distribution (A - F)", calcSubjectTitle: "Subject Information", subjectNameLabel: "Subject Name", creditsLabel: "Credits", weightLabel: "Weight Ratio", calcBtn: "Calculate Now", resultTitle: "SUBJECT RESULT", autoSaveNote: "✅ Result automatically saved.", historyTitle: "Calculation History", searchPlaceholder: "Search subjects...", filterAll: "All", filterPass: "Passed", filterFail: "Failed", emptyHistory: "No data available", personalInfo: "Personal Info", accountName: "Username", changeBtn: "Change", nickname: "Nickname (Display)", saveBtn: "Save", appSettings: "App Preferences", darkMode: "Dark Mode", autoSave: "Auto Save Results", language: "Language", gradingScaleTitle: "Grading System (University)", gradingScaleDesc: "Select your university for accurate GPA and grading logic.", changePass: "Security", oldPass: "Current Password", newPass: "New Password", saveChangeBtn: "Update Password", accountMgmt: "Danger Zone", logoutBtn: "Log Out", deleteAccBtn: "Delete Account Permanently", gradeA: "Excellent", gradeB: "Good", gradeC: "Average", gradeD: "Poor", gradeF: "Fail", backupTitle: "Data Backup", backupDesc: "Export data to move to a new device or import saved data.", btnExport: "Export", btnImport: "Import",
         errorEmpty: "Please fill all fields!", errorLogin: "Invalid username or password!", successLogin: "Login Successful!", successReg: "Registered! Please login.", successSave: "Saved successfully!", errorCooldown: "Please wait 5 mins to rename.", errorFile: "File too big.", errorPass: "Incorrect old password.", confirmDelete: "Are you sure? This cannot be undone.", settingUpdated: "Settings updated!", importSuccess: "Data imported successfully!", importError: "Invalid file format!", exportSuccess: "Data exported!"
     }
 };
@@ -371,7 +371,8 @@ const Calculator = {
 };
 
 const UI = {
-    chartInstances: {},
+    // Store two charts: Pie and Line
+    chartInstances: { pie: null, line: null },
 
     showAuth: () => {
         document.getElementById('auth-screen').style.display = 'flex';
@@ -525,23 +526,25 @@ const UI = {
 
     updateDashboard: (history) => {
         let count = 0, pass = 0, fail = 0, totalCredits = 0;
-        let gradeDist = { 'A':0, 'B':0, 'C':0, 'D':0, 'F':0 };
+        
+        // Count basic stats
         history.forEach(h => {
             const sc = parseFloat(h.score);
             const cr = parseInt(h.credits) || 0;
             count++; totalCredits += cr;
             if (sc >= 4.0) pass++; else fail++;
-            const g = Calculator.getGradingInfo(sc).grade.charAt(0);
-            if (gradeDist[g] !== undefined) gradeDist[g]++; else gradeDist['F']++;
         });
 
+        // Calculate and Animate GPA
         const gpaData = Calculator.calculateGPA(history);
         UI.animateValue('dash-gpa-10', parseFloat(document.getElementById('dash-gpa-10').innerText), parseFloat(gpaData.scale10), 1000);
         UI.animateValue('dash-gpa-4', parseFloat(document.getElementById('dash-gpa-4').innerText), parseFloat(gpaData.scale4), 1000);
+        
         document.getElementById('dash-pass-count').innerText = pass;
         document.getElementById('dash-fail-count').innerText = fail;
         document.getElementById('dash-total-credits').innerText = totalCredits;
 
+        // Ranking
         const gpa4 = parseFloat(gpaData.scale4);
         const lang = App.currentUser.settings.lang;
         let rank = "Chưa xếp loại";
@@ -553,7 +556,9 @@ const UI = {
             else rank = LANG[lang].gradeF;
         }
         document.getElementById('dash-ranking').innerText = rank;
-        UI.drawCharts(gradeDist);
+
+        // Draw Charts (Both Line & Pie)
+        UI.drawCharts(history);
     },
 
     animateValue: (id, start, end, duration) => {
@@ -569,15 +574,24 @@ const UI = {
         window.requestAnimationFrame(step);
     },
 
-    drawCharts: (distData) => {
-        const ctx1 = document.getElementById('scoreDistributionChart').getContext('2d');
+    drawCharts: (history) => {
+        // --- 1. PREPARE DATA FOR PIE CHART ---
+        let gradeDist = { 'A':0, 'B':0, 'C':0, 'D':0, 'F':0 };
+        history.forEach(h => {
+            const sc = parseFloat(h.score);
+            const g = Calculator.getGradingInfo(sc).grade.charAt(0);
+            if (gradeDist[g] !== undefined) gradeDist[g]++; else gradeDist['F']++;
+        });
+
+        // Draw Pie Chart
+        const ctxPie = document.getElementById('scoreDistributionChart').getContext('2d');
         if (UI.chartInstances.pie) UI.chartInstances.pie.destroy();
-        UI.chartInstances.pie = new Chart(ctx1, {
+        UI.chartInstances.pie = new Chart(ctxPie, {
             type: 'doughnut',
             data: {
                 labels: ['A', 'B', 'C', 'D', 'F'],
                 datasets: [{
-                    data: [distData.A, distData.B, distData.C, distData.D, distData.F],
+                    data: [gradeDist.A, gradeDist.B, gradeDist.C, gradeDist.D, gradeDist.F],
                     backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#F97316', '#EF4444'],
                     borderWidth: 0
                 }]
@@ -585,6 +599,91 @@ const UI = {
             options: { 
                 responsive: true, maintainAspectRatio: false, cutout: '70%',
                 plugins: { legend: { position: window.innerWidth < 480 ? 'bottom' : 'right' } }
+            }
+        });
+
+        // --- 2. PREPARE DATA FOR LINE CHART (GPA TREND) ---
+        // Sort oldest to newest to calculate cumulative GPA trend
+        const sortedHistory = [...history].sort((a, b) => a.date - b.date);
+        
+        let trendLabels = [];
+        let trendData = [];
+        
+        let runningTotalScore = 0;
+        let runningTotalCredits = 0;
+
+        sortedHistory.forEach(h => {
+            let s = parseFloat(h.score); // Base 10
+            let c = parseInt(h.credits);
+            
+            // Calculate GPA 4 for this subject
+            let gpa4 = Calculator.getGradingInfo(s).gpa;
+
+            // Add to running totals
+            runningTotalScore += (gpa4 * c);
+            runningTotalCredits += c;
+
+            // Calculate current Cumulative GPA
+            let currentGPA = (runningTotalCredits > 0) ? (runningTotalScore / runningTotalCredits).toFixed(2) : 0;
+            
+            // Format Date for Label (Day/Month)
+            let dateLabel = new Date(h.date).toLocaleDateString('vi-VN', {month:'numeric', day:'numeric'});
+            
+            // Add point to chart (using subject name truncated or date)
+            trendLabels.push(h.subject.length > 10 ? h.subject.substring(0, 10) + '...' : h.subject);
+            trendData.push(currentGPA);
+        });
+
+        // Draw Line Chart
+        const ctxLine = document.getElementById('gpaTrendChart').getContext('2d');
+        if (UI.chartInstances.line) UI.chartInstances.line.destroy();
+
+        // Create Gradient
+        let gradient = ctxLine.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(79, 70, 229, 0.5)');
+        gradient.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
+
+        UI.chartInstances.line = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: 'GPA Tích lũy',
+                    data: trendData,
+                    borderColor: '#4F46E5', // Primary Color
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4, // Smooth curve
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `GPA: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 4,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { stepSize: 0.5 }
+                    },
+                    x: {
+                        display: false // Hide X axis labels to prevent clutter if many items
+                    }
+                }
             }
         });
     },
@@ -930,6 +1029,8 @@ const App = {
             }
         }
         document.getElementById('dashboard-source-label').innerText = `📁 Nguồn: ${sourceName}`;
+        
+        // This will update basic stats AND call drawCharts(history)
         UI.updateDashboard(displayHistory);
         
         // Reset page to 1 on full Sync
