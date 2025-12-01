@@ -80,7 +80,7 @@ graph TD
     D -->|Logic| F[GPA Calculator];
     D -->|Manage| G[Admin Panel];
     G -.->|Control| B;
-
+```
 
 Score-Data/
 ├── index.html          # Giao diện chính (SPA Structure)
@@ -91,3 +91,7 @@ Score-Data/
 │   ├── agribank_qr.png
 │   └── ...
 └── README.md           # Tài liệu dự án
+
+Dashboard (Light),Settings (Dark)
+"<img src=""https://www.google.com/search?q=https://via.placeholder.com/400x200%3Ftext%3DDashboard%2BUI"" width=""400"">","<img src=""https://www.google.com/search?q=https://via.placeholder.com/400x200%3Ftext%3DDark%2BMode%2BUI"" width=""400"">"
+Tổng quan điểm số & Biểu đồ,Tùy chỉnh cá nhân hóa
