@@ -34,7 +34,7 @@
 
 ## 📖 Giới thiệu (Introduction)
 
-**ScoreMaster Pro** (Score Data) không chỉ là một công cụ tính điểm đơn thuần. Đây là giải pháp **Cloud-based** giúp sinh viên các trường Đại học (hỗ trợ sẵn HUFLIT, HUIT) theo dõi lộ trình học tập, quản lý tín chỉ, và dự phóng GPA tích lũy một cách trực quan nhất.
+**Score Data** không chỉ là một công cụ tính điểm đơn thuần. Đây là giải pháp **Cloud-based** giúp sinh viên các trường Đại học (hỗ trợ sẵn HUFLIT, HUIT) theo dõi lộ trình học tập, quản lý tín chỉ, và dự phóng GPA tích lũy một cách trực quan nhất.
 
 Dự án được xây dựng với tư duy **Mobile-First**, giao diện **Glassmorphism** hiện đại và tích hợp Back-end mạnh mẽ từ **Supabase**.
 
@@ -81,18 +81,3 @@ graph TD
     D -->|Manage| G[Admin Panel];
     G -.->|Control| B;
 ```
-
-
-
-
-
-Score-Data/
-├── index.html          # Giao diện chính (SPA Structure)
-├── style.css           # Styling (Variables, Animations, Responsive)
-├── script.js           # Core Logic, API Calls, UI Handling
-├── images/             # Assets (Logos, Defaults)
-│   ├── DefaultProfilePic.jpg
-│   ├── agribank_qr.png
-│   └── ...
-└── README.md           # Tài liệu dự án
-
