@@ -50,7 +50,6 @@ Dự án được xây dựng với tư duy **Mobile-First**, giao diện **Glas
 * **Supabase Cloud Sync:** Đồng bộ dữ liệu đa thiết bị theo thời gian thực.
 * **Authentication:** Đăng ký, Đăng nhập, Quên mật khẩu.
 * **Guest Mode:** Chế độ khách sử dụng LocalStorage (không cần tài khoản).
-* **Admin Panel:** Hệ thống quản trị viên chuyên nghiệp (Xem danh sách user, Ban/Unban user, Xóa tài khoản).
 
 ### 🎨 UI/UX & Utilities
 * **Glassmorphism Design:** Giao diện kính mờ sang trọng, hiệu ứng Blob Animation.
