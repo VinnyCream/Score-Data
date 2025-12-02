@@ -16,8 +16,17 @@
     
     <link rel="stylesheet" href="style.css">
     
+    <!-- Chart Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- EmailJS Integration -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("hN_BZ8JbiGPHnowD8");
+       })();
+    </script>
 </head>
 <body data-theme="light">
 
@@ -61,6 +70,11 @@
                     </span>
                 </div>
 
+                <!-- Link Quên mật khẩu -->
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <a href="#" onclick="UI.showForgotModal()" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;">Quên mật khẩu?</a>
+                </div>
+
                 <button class="btn btn-primary full-width hover-scale shimmer-effect" id="btn-login">
                     <span data-i18n="loginBtn">Đăng nhập</span>
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -86,6 +100,13 @@
                     <input type="text" id="reg-username" placeholder=" " autocomplete="off">
                     <label data-i18n="usernameLabel">Tên đăng nhập</label>
                     <span class="input-icon"><i class="fa-regular fa-user"></i></span>
+                </div>
+
+                <!-- Input Email cho Đăng ký -->
+                <div class="input-wrapper">
+                    <input type="email" id="reg-email" placeholder=" " autocomplete="off">
+                    <label>Email xác thực (để lấy lại mật khẩu)</label>
+                    <span class="input-icon"><i class="fa-regular fa-envelope"></i></span>
                 </div>
 
                 <div class="input-wrapper">
@@ -608,8 +629,20 @@
                         </div>
                     </div>
 
+                    <!-- UPDATED: Settings Card "Bảo mật" (Thêm phần cập nhật Email) -->
                     <div class="glass-card settings-card">
                         <h3 data-i18n="changePass">Bảo mật</h3>
+                        
+                        <!-- NEW: Update Email Section -->
+                        <p class="desc-text" style="margin-bottom: 10px;">Cập nhật email để sử dụng tính năng quên mật khẩu.</p>
+                        <div class="input-wrapper">
+                            <input type="email" id="set-email" placeholder=" ">
+                            <label>Email xác thực</label>
+                        </div>
+                        <button class="btn btn-primary btn-sm full-width" id="btn-update-email" style="margin-bottom: 20px;">Cập nhật Email</button>
+                        
+                        <div class="divider" style="margin: 15px 0;"><span>Mật khẩu</span></div>
+
                         <div class="input-wrapper">
                             <input type="password" id="old-pass" placeholder=" ">
                             <label data-i18n="oldPass">Mật khẩu hiện tại</label>
@@ -618,7 +651,7 @@
                             <input type="password" id="new-pass" placeholder=" ">
                             <label data-i18n="newPass">Mật khẩu mới</label>
                         </div>
-                        <button class="btn btn-primary btn-sm" id="btn-change-pass" data-i18n="saveChangeBtn">Cập nhật mật khẩu</button>
+                        <button class="btn btn-outline btn-sm full-width" id="btn-change-pass" data-i18n="saveChangeBtn">Đổi mật khẩu</button>
                     </div>
 
                     <div class="glass-card danger-zone">
@@ -662,6 +695,43 @@
             <div class="modal-actions">
                 <button class="btn btn-outline" onclick="document.getElementById('admin-create-modal').classList.add('hidden')">Hủy</button>
                 <button class="btn btn-primary" onclick="AdminPanel.createUser()">Tạo ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Quên Mật Khẩu -->
+    <div id="forgot-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <h3>Khôi phục mật khẩu</h3>
+            
+            <!-- Bước 1: Nhập Email -->
+            <div id="forgot-step-1">
+                <p class="desc-text">Nhập email đã đăng ký để nhận mã OTP.</p>
+                <div class="input-wrapper">
+                    <input type="email" id="forgot-email" placeholder=" ">
+                    <label>Email của bạn</label>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="UI.closeForgotModal()">Hủy</button>
+                    <button class="btn btn-primary" onclick="Auth.sendOTP()">Gửi mã OTP</button>
+                </div>
+            </div>
+
+            <!-- Bước 2: Nhập OTP & Mật khẩu mới -->
+            <div id="forgot-step-2" class="hidden">
+                <p class="desc-text">Mã OTP đã được gửi. Vui lòng kiểm tra email.</p>
+                <div class="input-wrapper">
+                    <input type="text" id="forgot-otp" placeholder=" " maxlength="6">
+                    <label>Nhập mã OTP (6 số)</label>
+                </div>
+                <div class="input-wrapper">
+                    <input type="password" id="forgot-new-pass" placeholder=" ">
+                    <label>Mật khẩu mới</label>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="UI.resetForgotFlow()">Quay lại</button>
+                    <button class="btn btn-primary" onclick="Auth.verifyOTPAndReset()">Đổi mật khẩu</button>
+                </div>
             </div>
         </div>
     </div>

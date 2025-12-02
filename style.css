@@ -1,5 +1,5 @@
 /* =========================================
-   SCOREMASTER PRO - RESPONSIVE STYLE V5.2 (Fix Scrollbar & Layout)
+   SCOREMASTER PRO - RESPONSIVE STYLE V5.3 (Forgot Password & Email Update)
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -254,7 +254,6 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    /* overflow: hidden; Remove overflow hiding to allow tooltips */
 }
 
 /* Individual Chart Column */
@@ -369,7 +368,6 @@ body {
     overflow-x: auto; /* Cho phép cuộn ngang */
     padding-bottom: 10px; /* Thêm padding để chứa thanh scrollbar */
     -webkit-overflow-scrolling: touch; 
-    /* Xóa scrollbar-width: none để hiện thanh cuộn trên Desktop */
 }
 
 /* Custom Scrollbar Styling for Folders */
@@ -448,20 +446,16 @@ body {
 
 /* SELECTION BAR - UPDATE: STATIC POSITION */
 .selection-bar {
-    /* Thay đổi từ fixed sang relative để nằm trong luồng document */
     position: relative; 
     bottom: auto; left: auto; transform: none;
-    
-    width: 100%; max-width: 100%; /* Chiếm hết chiều ngang container */
-    margin-bottom: 15px; /* Cách bảng bên dưới */
+    width: 100%; max-width: 100%; 
+    margin-bottom: 15px; 
     margin-top: 5px;
     z-index: 10;
-    
-    /* Giữ nguyên style màu sắc */
     background: #1F2937; color: #FFFFFF;
     padding: 10px 20px; border-radius: 12px;
     display: flex; align-items: center; justify-content: space-between; gap: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Giảm bóng đổ */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     animation: fadeIn 0.3s ease;
 }
 
@@ -516,7 +510,6 @@ body {
 /* Helper to hide edit button */
 .hidden-important { display: none !important; }
 
-
 /* Setting Rows */
 .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
 .setting-row.stacked { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -525,6 +518,16 @@ body {
 .icon-setting { width: 32px; height: 32px; background: rgba(79, 70, 229, 0.1); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
 .setting-title { font-weight: 600; font-size: 0.95rem; }
 .desc { font-size: 0.8rem; color: var(--text-muted); }
+
+/* NEW: Description Text Class (Consistent Styling) */
+.desc-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+    line-height: 1.5;
+    text-align: left;
+}
+
 .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
