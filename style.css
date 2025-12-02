@@ -1,5 +1,5 @@
 /* =========================================
-   SCOREMASTER PRO - RESPONSIVE STYLE V5.1 (Dual Chart Added)
+   SCOREMASTER PRO - RESPONSIVE STYLE V5.2 (Fix Scrollbar & Layout)
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -361,8 +361,36 @@ body {
 }
 .search-box input { border: none; background: transparent; outline: none; color: var(--text-main); width: 100%; font-size: 0.9rem; }
 
-.folder-list-row { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.folder-list-row::-webkit-scrollbar { display: none; }
+/* FOLDER LIST - SCROLLBAR UPDATE */
+.folder-list-row { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 15px; 
+    overflow-x: auto; /* Cho phép cuộn ngang */
+    padding-bottom: 10px; /* Thêm padding để chứa thanh scrollbar */
+    -webkit-overflow-scrolling: touch; 
+    /* Xóa scrollbar-width: none để hiện thanh cuộn trên Desktop */
+}
+
+/* Custom Scrollbar Styling for Folders */
+.folder-list-row::-webkit-scrollbar {
+    height: 8px; /* Chiều cao thanh scroll ngang */
+    display: block; /* Hiện thanh scroll */
+}
+.folder-list-row::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    margin: 0 10px; /* Margin 2 đầu */
+}
+.folder-list-row::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+}
+.folder-list-row::-webkit-scrollbar-thumb:hover {
+    background: var(--primary); /* Đổi màu khi hover */
+}
+
 .folder-card { 
     min-width: 130px; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border);
     border-radius: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; position: relative; flex-shrink: 0;
@@ -418,15 +446,25 @@ body {
 .custom-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
 .history-item.selected { background: rgba(79, 70, 229, 0.1) !important; border-color: var(--primary); }
 
-/* Selection Bar */
+/* SELECTION BAR - UPDATE: STATIC POSITION */
 .selection-bar {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    /* Thay đổi từ fixed sang relative để nằm trong luồng document */
+    position: relative; 
+    bottom: auto; left: auto; transform: none;
+    
+    width: 100%; max-width: 100%; /* Chiếm hết chiều ngang container */
+    margin-bottom: 15px; /* Cách bảng bên dưới */
+    margin-top: 5px;
+    z-index: 10;
+    
+    /* Giữ nguyên style màu sắc */
     background: #1F2937; color: #FFFFFF;
-    padding: 12px 24px; border-radius: 40px;
-    display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 500; width: 90%; max-width: 500px;
-    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 10px 20px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Giảm bóng đổ */
+    animation: fadeIn 0.3s ease;
 }
+
 .btn-action-high-contrast {
     background: rgba(255,255,255,0.2); 
     border: 1px solid rgba(255,255,255,0.4);
@@ -768,6 +806,17 @@ input:checked + .slider:before { transform: translateX(22px); }
     .admin-password-box { width: 100%; }
     .admin-status-box { width: 100%; text-align: left; margin: 5px 0; }
     .admin-actions { width: 100%; justify-content: flex-start; }
+
+    /* Selection Bar Mobile Update */
+    .selection-bar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        padding: 15px;
+    }
+    .selection-count { text-align: center; margin-bottom: 5px; }
+    .selection-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .selection-buttons button { flex: 1; min-width: 100px; }
 }
 
 /* Animations */

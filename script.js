@@ -1,7 +1,7 @@
 /**
- * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION + DONATE + DUAL CHART)
- * Version: 5.1 (Dual Charts Added)
- * Features: Pagination, Admin Panel, Input Limits, Donate System, GPA Trend Chart
+ * SCOREMASTER PRO - CLOUD EDITION (FULL SYNC + PAGINATION + DONATE + DUAL CHART + SCROLL FIX)
+ * Version: 5.2 (Horizontal Scroll Fix)
+ * Features: Pagination, Admin Panel, Input Limits, Donate System, GPA Trend Chart, Mouse Wheel Scroll
  */
 
 // ==================================================================
@@ -15,7 +15,7 @@ const SUPABASE_KEY = 'sb_publishable_F2EW-fWUGN5z7zw02BlTEw_iSfU7ohe';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CONFIG = {
-    APP_VERSION: '5.1 DualChart',
+    APP_VERSION: '5.2 ScrollFix',
     ANIMATION_DURATION: 300,
     TOAST_TIME: 3000,
     NAME_CHANGE_COOLDOWN: 5 * 60 * 1000, 
@@ -1167,7 +1167,14 @@ const App = {
         const count = App.selectedItems.size;
         document.getElementById('sel-count').innerText = count;
         const bar = document.getElementById('selection-action-bar');
-        if (count > 0) bar.classList.remove('hidden'); else bar.classList.add('hidden');
+        
+        // Cập nhật vị trí thanh selection bar
+        if (count > 0) {
+            bar.classList.remove('hidden'); 
+        } else {
+            bar.classList.add('hidden');
+        }
+        
         document.querySelectorAll('.history-item').forEach(row => {
             const id = parseInt(row.getAttribute('data-id'));
             if (App.selectedItems.has(id)) row.classList.add('selected'); else row.classList.remove('selected');
@@ -1324,6 +1331,16 @@ const App = {
         });
         document.getElementById('history-date-filter').onchange = (e) => UI.renderHistory(App.currentUser.history, 'all', e.target.value);
         document.getElementById('btn-clear-date').onclick = () => { document.getElementById('history-date-filter').value = ''; UI.renderHistory(App.currentUser.history); };
+
+        // --- NEW: MOUSE WHEEL SCROLL FOR FOLDER LIST (WINDOWS FIX) ---
+        const folderContainer = document.getElementById('folder-container');
+        if(folderContainer) {
+            folderContainer.addEventListener('wheel', (evt) => {
+                // Prevent default vertical scroll and translate to horizontal
+                evt.preventDefault();
+                folderContainer.scrollLeft += evt.deltaY;
+            });
+        }
     },
 
     saveHistory: (subject, score, credits, type) => {
