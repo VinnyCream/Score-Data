@@ -1359,3 +1359,24 @@ input:checked + .slider:before { transform: translateX(22px); }
         text-align: left; /* Keep note text left aligned or justified for readability */
     }
 }
+
+/* Security away from Mobile, PC, Mac */
+body {
+    /* 1. Chặn bôi đen văn bản (PC & Mobile) */
+    -webkit-user-select: none; /* Safari / Chrome */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE / Edge */
+    user-select: none;         /* Chuẩn chung */
+
+    /* 2. Chặn menu popup khi nhấn giữ trên iOS (iPhone/iPad) */
+    -webkit-touch-callout: none;
+}
+
+/* Cho phép người dùng vẫn nhập liệu được vào ô Input/Textarea 
+   (Nếu không có dòng này, người dùng sẽ không gõ phím được) */
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}

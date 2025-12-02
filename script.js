@@ -1366,3 +1366,39 @@ document.addEventListener('DOMContentLoaded', () => {
     DonateController.init(); // Initialize Donate Logic
     Auth.init();
 });
+
+// ==================================================================
+// 1. Chặn Menu chuột phải (PC) & Menu nhấn giữ (Mobile)
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+}, false);
+
+// 2. Chặn các phím tắt hệ thống (PC/Mac)
+document.addEventListener('keydown', function(e) {
+    // Mã phím: F12 = 123, I = 73, J = 74, C = 67, U = 85, S = 83
+    
+    // Chặn F12 (Mọi hệ điều hành)
+    if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+    }
+
+    // Các biến kiểm tra phím điều khiển
+    // Windows dùng Ctrl, Mac dùng Command (metaKey)
+    const isCtrl = e.ctrlKey || e.metaKey; 
+    // Windows dùng Shift, Mac đôi khi dùng Option (altKey) thay thế
+    const isShiftOrAlt = e.shiftKey || e.altKey;
+
+    // Danh sách phím cần chặn: I, J, C (Inspect/Console), U (View Source), S (Save)
+    if (isCtrl && [73, 74, 67, 85, 83].includes(e.keyCode)) {
+        e.preventDefault();
+        return false;
+    }
+
+    // Kiểm tra kỹ hơn cho Mac (Cmd + Option + I/J/C)
+    if (e.metaKey && e.altKey && [73, 74, 67].includes(e.keyCode)) {
+        e.preventDefault();
+        return false;
+    }
+});
