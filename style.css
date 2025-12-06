@@ -2349,3 +2349,38 @@ input, textarea {
         gap: 2px !important;
     }
 }
+
+/* =========================================
+   FORCE ZOOM FIX CHO MOBILE (LỊCH TÀI CHÍNH)
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* Chỉ thu nhỏ phần khung chứa lịch */
+    .finance-calendar-container {
+        /* Cách 1: Dùng thuộc tính zoom (Chạy tốt trên Chrome/Safari Mobile/Android/iOS) */
+        zoom: 0.75; 
+        
+        /* Cách 2: Fallback cho trình duyệt không hỗ trợ zoom */
+        /* Nếu zoom không chạy, dòng dưới sẽ ép size bằng transform */
+        @supports not (zoom: 0.75) {
+            transform: scale(0.75);
+            transform-origin: top center;
+            width: 133.33%; /* Mở rộng chiều ngang để khi co lại nó vừa khít 100% (100/0.75) */
+            margin-bottom: -20%; /* Kéo nội dung bên dưới lên lấp khoảng trống */
+        }
+    }
+
+    /* Thu nhỏ luôn phần Thanh tổng quan (Thu/Chi/Tổng) một chút cho cân đối */
+    .finance-summary-bar {
+        zoom: 0.85;
+    }
+
+    /* Đảm bảo Font chữ trong ô lịch đủ nhỏ sau khi zoom */
+    .cal-date-num {
+        font-size: 1rem !important; /* Tăng lại size chữ gốc một chút vì đã bị zoom nhỏ */
+    }
+    
+    .cal-indicators span {
+        font-size: 0.7rem !important; /* Tăng lại size số tiền một chút cho dễ đọc */
+    }
+}
