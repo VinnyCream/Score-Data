@@ -2269,65 +2269,83 @@ input, textarea {
 }
 
 /* =========================================
-   FIX LỖI HIỂN THỊ LỊCH TRÊN MOBILE
+   FIX LỖI LỊCH MOBILE (FINAL VERSION)
    ========================================= */
 
-/* 1. Đồng bộ khoảng cách giữa Header và Grid ngày */
-.calendar-days-header {
-    /* Thêm gap y hệt như .calendar-grid để các cột thẳng hàng */
-    gap: 8px; 
-    
-    /* Căn giữa chữ trong ô header */
-    align-items: center;
-    justify-items: center;
-}
-
-/* 2. Tinh chỉnh riêng cho Mobile để không bị mất góc */
+/* Mobile: Ép layout lịch hiển thị chuẩn */
 @media (max-width: 768px) {
     
-    /* Giảm padding của khung bao ngoài để có thêm chỗ cho lịch */
-    .finance-calendar-container {
-        padding: 10px 5px !important; /* Trên dưới 10px, Trái phải 5px */
+    /* 1. Mở rộng tối đa không gian container */
+    /* Ghi đè padding của glass-card để lấy thêm đất diễn cho lịch */
+    .finance-calendar-container.glass-card {
+        padding: 15px 4px !important; /* Trái phải chỉ để 4px */
+        overflow: hidden; /* Cắt bỏ phần thừa nếu có */
     }
 
-    /* Giảm khoảng cách giữa các ô lịch xuống mức tối thiểu */
+    /* 2. Đồng bộ lưới Header và Body */
     .calendar-days-header,
     .calendar-grid {
-        gap: 4px !important; /* Giảm từ 8px xuống 4px */
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important; /* Chia đều 7 cột */
+        gap: 3px !important; /* Khoảng cách siêu nhỏ */
+        width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    /* Thu nhỏ font chữ header T2, T3... */
+    /* 3. Xử lý Header (Thứ) */
     .calendar-days-header div {
-        font-size: 0.8rem;
-        width: 100%; /* Đảm bảo ô header chiếm hết không gian cột */
+        font-size: 0.75rem; /* Chữ nhỏ lại */
+        text-align: center;
+        min-width: 0 !important; /* Quan trọng: Cho phép co nhỏ */
+        overflow: hidden;
     }
 
-    /* Đảm bảo ô ngày không bị phình to quá mức */
+    /* 4. Xử lý Ô ngày (QUAN TRỌNG NHẤT) */
     .cal-cell {
-        min-height: 60px !important; /* Giảm chiều cao tối thiểu */
-        padding: 2px !important;     /* Giảm padding trong ô */
+        min-width: 0 !important; /* KEY FIX: Cho phép ô nhỏ hơn nội dung bên trong */
+        min-height: 55px !important; /* Chiều cao cố định */
+        padding: 2px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden !important; /* Cắt phần chữ thừa */
     }
-    
-    /* Chữ ngày (1, 2, 3...) nhỏ lại chút */
+
+    /* 5. Xử lý số ngày */
     .cal-date-num {
         font-size: 0.85rem !important;
-        margin-bottom: 2px;
+        font-weight: 700;
+        margin-left: 2px;
     }
 
-    /* Các số tiền thu/chi (+35k...) nhỏ lại để không bị tràn */
+    /* 6. Xử lý số tiền (Indicators) để không phá layout */
     .cal-indicators {
-        font-size: 0.55rem !important;
-        line-height: 1.1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end; /* Căn phải */
+    }
+
+    .cal-indicators span {
+        font-size: 0.55rem !important; /* Chữ siêu nhỏ cho mobile */
+        white-space: nowrap !important; /* Không xuống dòng */
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* Hiện dấu ... nếu quá dài */
+        max-width: 100%; /* Không được vượt quá ô */
+        display: block;
+        line-height: 1.2;
+        padding-right: 2px;
     }
 }
 
-/* 3. Fix cho màn hình siêu nhỏ (iPhone SE, Galaxy Fold...) */
-@media (max-width: 380px) {
-    .calendar-days-header,
-    .calendar-grid {
-        gap: 2px !important; /* Giảm gap cực nhỏ */
-    }
+/* Fix cho màn hình siêu nhỏ (iPhone SE, Galaxy Fold) */
+@media (max-width: 360px) {
     .cal-cell {
-        border-radius: 6px !important; /* Bo góc ít hơn cho đỡ tốn chỗ */
+        min-height: 45px !important;
+        border-radius: 6px;
+    }
+    .calendar-days-header, .calendar-grid {
+        gap: 2px !important;
     }
 }
