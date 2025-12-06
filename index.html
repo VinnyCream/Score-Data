@@ -19,6 +19,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
@@ -626,7 +628,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-card settings-card">
+                    <div class="glass-card settings-card" id="settings-security-card">
                         <h3 data-i18n="changePass">Bảo mật</h3>
                         
                         <div id="group-update-email">
@@ -655,7 +657,7 @@
                         <p class="warning-text">Các hành động dưới đây không thể hoàn tác.</p>
                         <div class="danger-actions">
                             <button class="btn btn-outline" onclick="Auth.logout()" data-i18n="logoutBtn">Đăng xuất</button>
-                            <button class="btn btn-danger" onclick="Auth.deleteAccount()" data-i18n="deleteAccBtn">Xóa vĩnh viễn tài khoản</button>
+                            <button class="btn btn-danger" id="btn-delete-account" onclick="Auth.deleteAccount()" data-i18n="deleteAccBtn">Xóa vĩnh viễn tài khoản</button>
                         </div>
                     </div>
                 </div>

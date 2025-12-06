@@ -1,5 +1,6 @@
 /* =========================================
    SCOREMASTER PRO - RESPONSIVE STYLE V5.3 (Forgot Password & Email Update)
+   Updated: Drag & Drop Folder Support
    ========================================= */
 
 /* --- 1. CORE & VARIABLES --- */
@@ -389,10 +390,20 @@ body {
     background: var(--primary); /* Đổi màu khi hover */
 }
 
+/* UPDATE: Folder Card for Drag & Drop */
 .folder-card { 
     min-width: 130px; padding: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border);
-    border-radius: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; position: relative; flex-shrink: 0;
+    border-radius: 16px; 
+    display: flex; flex-direction: column; gap: 4px; position: relative; flex-shrink: 0;
+    /* New props for Drag */
+    cursor: grab; 
+    touch-action: pan-y; /* Cho phép cuộn dọc trang web, nhưng SortableJS sẽ xử lý ngang */
+    user-select: none;
+    transition: background 0.2s, border-color 0.2s; /* Bỏ transition transform để kéo mượt */
 }
+
+.folder-card:active { cursor: grabbing; }
+
 .folder-card.active { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); }
 .folder-icon { font-size: 1.5rem; }
 .folder-name { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;}
@@ -401,6 +412,21 @@ body {
 .folder-card:hover .folder-actions { opacity: 1; }
 .btn-folder-act { padding: 4px; border-radius: 4px; border: none; background: rgba(255,255,255,0.5); cursor: pointer; font-size: 0.8rem; }
 .is-pinned { position: absolute; top: 8px; right: 8px; color: var(--warning); font-size: 0.9rem; }
+
+/* SORTABLE JS CLASSES (NEW) */
+.sortable-ghost {
+    opacity: 0.4;
+    background: rgba(79, 70, 229, 0.1);
+    border: 2px dashed var(--primary);
+}
+.sortable-drag {
+    cursor: grabbing;
+    opacity: 1;
+    background: var(--glass-bg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transform: scale(1.05);
+    z-index: 1000;
+}
 
 /* Controls */
 .controls-row { display: flex; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
