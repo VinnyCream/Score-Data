@@ -1409,3 +1409,322 @@ input, textarea {
     -ms-user-select: text;
     user-select: text;
 }
+
+/* =========================================
+   13. UTILITIES & MINIGAMES (NEW SECTION)
+   ========================================= */
+
+/* --- HUB GRID --- */
+.utilities-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.utility-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.utility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-color: var(--primary);
+}
+
+.utility-icon-box {
+    width: 80px; height: 80px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+}
+.utility-icon-box img { width: 100%; height: 100%; object-fit: contain; }
+
+.utility-info h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.utility-info p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
+
+/* --- SPIN THE WHEEL LAYOUT --- */
+.spin-layout {
+    display: flex;
+    gap: 20px;
+    height: 600px;
+}
+
+/* Left Column: Wheel Canvas */
+.wheel-container {
+    flex: 2;
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
+}
+
+.wheel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#wheel-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Animation for JS override */
+}
+
+/* Pointer Triangle */
+.wheel-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid var(--danger);
+    z-index: 5;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
+}
+
+.wheel-controls { width: 100%; max-width: 300px; margin-top: 20px; }
+.btn-lg { padding: 16px 32px; font-size: 1.1rem; font-weight: 800; border-radius: 12px; }
+
+/* Shimmer Effect for Spin Button */
+.shimmer-effect {
+    position: relative;
+    overflow: hidden;
+}
+.shimmer-effect::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-20deg);
+    animation: shimmer 3s infinite;
+}
+@keyframes shimmer { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+/* Right Column: Settings & Entries */
+.wheel-settings {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important; /* Reset generic padding */
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(0,0,0,0.02);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: 0.2s;
+}
+
+.tab-btn:hover { background: rgba(0,0,0,0.05); }
+.tab-btn.active { border-bottom-color: var(--primary); color: var(--primary); background: var(--glass-bg); }
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+.tab-content.active { display: block; }
+
+#wheel-input-text {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    border: none;
+    background: transparent;
+    outline: none;
+    resize: none;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-main);
+}
+
+.wheel-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.entry-counter {
+    font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; text-align: right;
+}
+
+/* History List Item in Tab */
+.wheel-history-item {
+    padding: 8px 12px;
+    background: var(--input-bg);
+    margin-bottom: 6px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--secondary);
+}
+
+.empty-state-sm { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px; font-style: italic; }
+
+/* Mini Inputs */
+.mini-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    margin-top: 5px;
+}
+
+/* --- COUNTDOWN TIMER STYLES --- */
+.countdown-container { padding: 20px 0; min-height: 400px; }
+.countdown-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Timer Ring */
+.timer-display-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+.timer-ring { transform: rotate(-90deg); }
+.timer-ring-bg { stroke: rgba(0,0,0,0.05); }
+.timer-ring-progress {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear; /* Smooth ticking */
+}
+[data-theme="dark"] .timer-ring-bg { stroke: rgba(255,255,255,0.1); }
+
+.timer-text-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.timer-numbers {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-main);
+    font-variant-numeric: tabular-nums; /* Monospace numbers to prevent jitter */
+}
+
+.timer-labels {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* Inputs & Controls */
+.countdown-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.time-input-group { display: flex; flex-direction: column; align-items: center; }
+.time-input-group input {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text-main);
+    padding: 0;
+}
+.time-input-group input:focus { border-color: var(--primary); }
+.time-input-group label { font-size: 0.75rem; margin-top: 5px; color: var(--text-muted); }
+.time-separator { font-size: 2rem; font-weight: 700; color: var(--text-muted); margin-bottom: 20px; }
+
+.countdown-controls { display: flex; gap: 15px; }
+
+/* --- MODAL RESULT ANIMATION --- */
+.result-icon-box { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+/* --- ALARM SHAKE ANIMATION --- */
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* --- UTILITIES MOBILE RESPONSIVE --- */
+@media (max-width: 900px) {
+    .spin-layout { flex-direction: column; height: auto; }
+    .wheel-settings { min-height: 400px; }
+}
+
+@media (max-width: 768px) {
+    /* Wheel Mobile */
+    .wheel-wrapper { max-width: 300px; }
+    #wheel-canvas { width: 300px; height: 300px; }
+    .wheel-pointer { top: -8px; border-width: 15px; border-top-width: 30px; }
+    
+    /* Countdown Mobile */
+    .countdown-inputs { gap: 5px; }
+    .time-input-group input { width: 50px; height: 50px; font-size: 1.5rem; }
+    .time-separator { font-size: 1.5rem; margin-bottom: 20px; }
+    .timer-display-wrapper { width: 220px; height: 220px; }
+    .timer-ring { width: 220px; height: 220px; }
+    .timer-ring circle { r: 100; cx: 110; cy: 110; }
+    .timer-numbers { font-size: 2rem; }
+}
