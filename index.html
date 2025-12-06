@@ -21,8 +21,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -55,7 +56,7 @@
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                     <h1 class="app-name">Score Data</h1>
-                    <p class="app-slogan" data-i18n="welcomeSub">Hệ thống quản lý điểm số sinh viên</p>
+                    <p class="app-slogan" data-i18n="welcomeSub">"Hệ thống quản lý điểm số cho sinh viên"</p>
                 </div>
             </div>
             
@@ -99,7 +100,7 @@
 
             <div id="register-form" class="auth-form" style="display: none;">
                 <h2 data-i18n="registerHeader">Tạo tài khoản</h2>
-                <p class="desc-text" data-i18n="regSub">Tạo tài khoản để lưu trữ dữ liệu lâu dài</p>
+                <p class="desc-text" data-i18n="regSub"></p>
 
                 <div class="input-wrapper">
                     <input type="text" id="reg-username" placeholder=" " autocomplete="off">
@@ -109,7 +110,7 @@
 
                 <div class="input-wrapper">
                     <input type="email" id="reg-email" placeholder=" " autocomplete="off">
-                    <label>Email xác thực (để lấy lại mật khẩu)</label>
+                    <label>Email xác thực</label>
                     <span class="input-icon"><i class="fa-regular fa-envelope"></i></span>
                 </div>
 
@@ -212,7 +213,7 @@
             </header>
 
             <section id="dashboard" class="page-section active fade-in">
-                <div class="section-header">
+                 <div class="section-header">
                     <div>
                         <h2 class="page-title" data-i18n="dashboardTitle">Bảng điều khiển</h2>
                         <span id="dashboard-source-label" class="source-badge">📁 Nguồn: Tất cả</span>
@@ -470,11 +471,22 @@
                             <button class="btn btn-success btn-sm mt-2">Vào ngay <i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </div>
+
+                    <div class="glass-card utility-card" onclick="Utilities.navigateTo('finance')">
+                        <div class="utility-icon-box">
+                            <img src="Images/financialLogo.png" alt="Financial Management" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2344/2344132.png'">
+                        </div>
+                        <div class="utility-info">
+                            <h3 data-i18n="financeTitle">Quản lý Tài chính (Financial Management)</h3>
+                            <p data-i18n="financeDesc">Theo dõi, lập ngân sách, và kiểm soát tiền bạc (học phí, chi tiêu...). Sống thoải mái, tránh nợ nần.</p>
+                            <button class="btn btn-success btn-sm mt-2">Vào ngay <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <section id="utility-spinwheel" class="page-section fade-in">
-                <div class="section-header">
+                 <div class="section-header">
                     <button class="btn btn-outline btn-sm" onclick="Utilities.backToHub()">
                         <i class="fa-solid fa-chevron-left"></i> Quay lại Tiện ích
                     </button>
@@ -540,7 +552,7 @@
             </section>
 
             <section id="utility-countdown" class="page-section fade-in">
-                <div class="section-header">
+                 <div class="section-header">
                     <button class="btn btn-outline btn-sm" onclick="Utilities.backToHub()">
                         <i class="fa-solid fa-chevron-left"></i> Quay lại Tiện ích
                     </button>
@@ -593,8 +605,82 @@
                 </div>
             </section>
 
-            <section id="admin-panel" class="page-section fade-in">
+            <section id="utility-finance" class="page-section fade-in">
                 <div class="section-header">
+                    <div>
+                         <button class="btn btn-outline btn-sm mb-2" onclick="Utilities.backToHub()">
+                            <i class="fa-solid fa-chevron-left"></i> Quay lại Tiện ích
+                        </button>
+                        <h2 class="page-title">Quản lý Tài chính</h2>
+                    </div>
+                    
+                    <div class="finance-header-actions">
+                         <input type="file" id="fin-import-input" accept=".json" style="display: none;" onchange="Finance.handleImport(this)">
+
+                         <button class="btn btn-outline btn-sm" onclick="Finance.triggerImport()" title="Nhập dữ liệu từ file JSON">
+                            <i class="fa-solid fa-file-import"></i> Import
+                         </button>
+
+                         <button class="btn btn-glass btn-sm" onclick="Finance.openSettings()" title="Cài đặt">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                        
+                        <div class="export-group">
+                             <button class="btn btn-outline btn-sm" onclick="Finance.exportData('json')"><i class="fa-solid fa-file-code"></i> JSON</button>
+                             <button class="btn btn-outline btn-sm" onclick="Finance.exportData('excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finance-summary-bar glass-card">
+                     <div class="fin-stat-item">
+                         <span class="fin-label">Thu Nhập</span>
+                         <span class="fin-value text-success" id="fin-total-income">0đ</span>
+                     </div>
+                     <div class="fin-vertical-div"></div>
+                     <div class="fin-stat-item">
+                         <span class="fin-label">Chi Tiêu</span>
+                         <span class="fin-value text-danger" id="fin-total-expense">0đ</span>
+                     </div>
+                     <div class="fin-vertical-div"></div>
+                     <div class="fin-stat-item">
+                         <span class="fin-label">Tổng Dư</span>
+                         <span class="fin-value text-primary" id="fin-balance">0đ</span>
+                     </div>
+                </div>
+
+                <div class="finance-controls-row">
+                    <div class="calendar-nav">
+                        <button class="btn-icon-circle" onclick="Finance.changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h3 id="finance-calendar-title">Tháng 12/2025</h3>
+                        <button class="btn-icon-circle" onclick="Finance.changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="report-buttons">
+                        <button class="btn btn-sm btn-glass" onclick="Finance.showReport('annual')"><i class="fa-solid fa-chart-column"></i> Báo cáo Năm</button>
+                        <button class="btn btn-sm btn-glass" onclick="Finance.showReport('category')"><i class="fa-solid fa-chart-pie"></i> Báo cáo Danh mục</button>
+                        <button class="btn btn-sm btn-glass" onclick="Finance.showReport('alltime')"><i class="fa-solid fa-chart-line"></i> Toàn kỳ</button>
+                    </div>
+                </div>
+
+                <div class="finance-calendar-container glass-card">
+                    <div class="calendar-days-header">
+                        <div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div class="text-danger">CN</div>
+                    </div>
+                    <div id="finance-calendar-grid" class="calendar-grid">
+                        </div>
+                </div>
+
+                <div class="finance-details-section">
+                    <h3>Chi tiết giao dịch tháng này</h3>
+                    <div id="finance-transaction-list" class="transaction-list-container">
+                        <div class="empty-state">Chưa có giao dịch nào trong tháng này.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="admin-panel" class="page-section fade-in">
+                 <div class="section-header">
                     <div>
                         <h2 class="page-title text-admin">Admin Panel</h2>
                         <span class="source-badge" style="background: var(--secondary); color: white;">QUẢN TRỊ VIÊN</span>
@@ -635,7 +721,7 @@
             </section>
 
             <section id="donate" class="page-section fade-in">
-                <h2 class="page-title" data-i18n="navDonate">Ủng hộ (Donate)</h2>
+                 <h2 class="page-title" data-i18n="navDonate">Ủng hộ (Donate)</h2>
                 
                 <div class="glass-card donate-container">
                     <div class="donate-left-col">
@@ -683,7 +769,7 @@
             </section>
 
             <section id="settings" class="page-section fade-in">
-                <h2 class="page-title" data-i18n="navSettings">Cài đặt tài khoản</h2>
+                 <h2 class="page-title" data-i18n="navSettings">Cài đặt tài khoản</h2>
                 <div class="settings-grid">
                     
                     <div class="glass-card settings-card">
@@ -826,7 +912,7 @@
     </div>
 
     <div id="crop-modal" class="modal-overlay hidden">
-        <div class="glass-card modal-content">
+         <div class="glass-card modal-content">
             <h3>Chỉnh sửa ảnh đại diện</h3>
             <div class="crop-container">
                 <img id="crop-image" src="" alt="Image to crop">
@@ -839,7 +925,7 @@
     </div>
 
     <div id="admin-create-modal" class="modal-overlay hidden">
-        <div class="glass-card modal-content">
+         <div class="glass-card modal-content">
             <h3>Tạo tài khoản mới (Admin)</h3>
             <div class="input-wrapper">
                 <input type="text" id="admin-new-username" placeholder=" ">
@@ -857,7 +943,7 @@
     </div>
 
     <div id="forgot-modal" class="modal-overlay hidden">
-        <div class="glass-card modal-content">
+         <div class="glass-card modal-content">
             <h3>Khôi phục mật khẩu</h3>
             
             <div id="forgot-step-1">
@@ -891,7 +977,7 @@
     </div>
 
     <div id="spin-result-modal" class="modal-overlay hidden">
-        <div class="glass-card modal-content center-text" style="max-width: 350px;">
+         <div class="glass-card modal-content center-text" style="max-width: 350px;">
             <div class="result-icon-box" style="font-size: 3rem; margin-bottom: 10px;">🎉</div>
             <h3 style="color: var(--primary); margin-bottom: 10px;">KẾT QUẢ</h3>
             <div id="spin-winner-text" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: var(--text-main);">
@@ -910,7 +996,7 @@
     </div>
 
     <div id="countdown-alarm-modal" class="modal-overlay hidden">
-        <div class="glass-card modal-content center-text">
+         <div class="glass-card modal-content center-text">
             <div style="font-size: 4rem; color: var(--danger); animation: shake 0.5s infinite;">⏰</div>
             <h3>ĐÃ HẾT GIỜ!</h3>
             <p>Thời gian đếm ngược đã kết thúc.</p>
@@ -919,6 +1005,99 @@
                     <i class="fa-solid fa-check"></i> OK, Tắt Chuông
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div id="finance-entry-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content finance-modal">
+            <div class="fin-modal-header">
+                <button class="fin-tab active" data-tab="expense" onclick="Finance.switchEntryTab('expense')">CHI TIÊU</button>
+                <button class="fin-tab" data-tab="income" onclick="Finance.switchEntryTab('income')">THU NHẬP</button>
+            </div>
+            
+            <div class="fin-modal-body">
+                <div class="fin-date-display" id="fin-entry-date">...</div>
+                
+                <div class="input-wrapper tight">
+                    <span class="currency-prefix" id="fin-currency-display">đ</span>
+                    <input type="text" id="fin-amount-input" class="big-input" placeholder="0" inputmode="numeric">
+                    <label>Số Tiền</label>
+                </div>
+
+                <div class="fin-category-section">
+                    <div class="flex-between">
+                        <label>Danh mục</label>
+                        <button class="btn-text-sm" onclick="Finance.openCategoryManager()"><i class="fa-solid fa-pen-to-square"></i> Quản lý</button>
+                    </div>
+                    <div id="fin-category-grid" class="category-grid">
+                        </div>
+                    <input type="hidden" id="fin-selected-category">
+                </div>
+
+                <div class="input-wrapper">
+                    <input type="text" id="fin-note-input" placeholder=" ">
+                    <label>Ghi chú (Tùy chọn)</label>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="Finance.closeEntryModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="Finance.saveTransaction()">Lưu Giao Dịch</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="finance-category-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <h3>Quản lý Danh mục</h3>
+            <p class="desc-text">Thêm hoặc xóa danh mục cho <span id="fin-cat-type-label" class="text-primary font-bold">...</span></p>
+            
+            <div class="add-cat-row">
+                <input type="text" id="fin-new-cat-name" placeholder="Tên danh mục mới...">
+                <button class="btn btn-primary btn-sm" onclick="Finance.addNewCategory()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div id="fin-manage-cat-list" class="manage-cat-list scroll-custom">
+                </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="Finance.closeCategoryManager()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="finance-settings-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content center-text">
+            <h3>Cài đặt Tài chính</h3>
+            <div class="input-wrapper">
+                <select id="fin-currency-select">
+                    <option value="đ">Việt Nam Đồng (đ)</option>
+                    <option value="$">Đô la Mỹ ($)</option>
+                    <option value="¥">Yên Nhật (¥)</option>
+                    <option value="元">Nhân dân tệ (元)</option>
+                    <option value="€">Euro (€)</option>
+                </select>
+                <label>Đơn vị Tiền tệ</label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary full-width" onclick="Finance.saveSettings()">Lưu Cài Đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="finance-report-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-content large-modal">
+            <div class="flex-between mb-2">
+                <h3 id="fin-report-title">Báo Cáo</h3>
+                <button class="btn-close-floating" onclick="document.getElementById('finance-report-modal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="report-content-box">
+                <canvas id="finance-chart-canvas"></canvas>
+            </div>
+            
+            <div id="fin-report-summary" class="report-text-summary">
+                </div>
         </div>
     </div>
 
